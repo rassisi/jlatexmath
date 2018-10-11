@@ -47,6 +47,9 @@ package org.scilab.forge.jlatexmath;
 
 import java.util.LinkedList;
 
+import org.scilab.forge.jlatexmath.model.Atom;
+import org.scilab.forge.jlatexmath.model.VRowAtom;
+
 public class ArrayOfAtoms extends TeXFormula {
 
     public LinkedList<LinkedList<Atom>> array;

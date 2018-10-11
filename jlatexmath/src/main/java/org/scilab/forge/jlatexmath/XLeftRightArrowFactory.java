@@ -45,6 +45,16 @@
 
 package org.scilab.forge.jlatexmath;
 
+import org.scilab.forge.jlatexmath.model.Atom;
+import org.scilab.forge.jlatexmath.model.ScaleAtom;
+import org.scilab.forge.jlatexmath.model.SmashedAtom;
+import org.scilab.forge.jlatexmath.model.SpaceAtom;
+import org.scilab.forge.jlatexmath.model.SymbolAtom;
+import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.HorizontalBox;
+import org.scilab.forge.jlatexmath.ui.ScaleBox;
+import org.scilab.forge.jlatexmath.ui.StrutBox;
+
 /**
  * Responsible for creating a box containing a delimiter symbol that exists in
  * different sizes.

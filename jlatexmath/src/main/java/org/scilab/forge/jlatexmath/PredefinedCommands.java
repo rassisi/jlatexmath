@@ -45,6 +45,8 @@
 
 package org.scilab.forge.jlatexmath;
 
+import org.scilab.forge.jlatexmath.model.MacroInfo;
+
 final class PredefinedCommands {
 
     PredefinedCommands() { }

@@ -48,6 +48,10 @@ package org.scilab.forge.jlatexmath;
 import java.util.List;
 import java.util.Stack;
 
+import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.HorizontalBox;
+import org.scilab.forge.jlatexmath.ui.VerticalBox;
+
 public final class BreakFormula {
 
 	public static Box split(Box box, float width, float interline) {

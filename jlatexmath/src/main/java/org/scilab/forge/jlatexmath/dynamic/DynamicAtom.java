@@ -45,12 +45,12 @@
 
 package org.scilab.forge.jlatexmath.dynamic;
 
-import org.scilab.forge.jlatexmath.Atom;
-import org.scilab.forge.jlatexmath.Box;
-import org.scilab.forge.jlatexmath.EmptyAtom;
-import org.scilab.forge.jlatexmath.StrutBox;
 import org.scilab.forge.jlatexmath.TeXEnvironment;
 import org.scilab.forge.jlatexmath.TeXFormula;
+import org.scilab.forge.jlatexmath.model.Atom;
+import org.scilab.forge.jlatexmath.model.EmptyAtom;
+import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.StrutBox;
 
 /**
  * This kind of atom is used to have a dynamic content which comes from an other

@@ -46,6 +46,15 @@
 
 package org.scilab.forge.jlatexmath;
 
+import org.scilab.forge.jlatexmath.model.Atom;
+import org.scilab.forge.jlatexmath.model.SpaceAtom;
+import org.scilab.forge.jlatexmath.model.SymbolAtom;
+import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.HorizontalBox;
+import org.scilab.forge.jlatexmath.ui.OverUnderBox;
+import org.scilab.forge.jlatexmath.ui.StrutBox;
+import org.scilab.forge.jlatexmath.ui.VerticalBox;
+
 /**
  * A box representing another atom with a delimiter and a script above or under
  * it, with script and delimiter seperated by a kern.

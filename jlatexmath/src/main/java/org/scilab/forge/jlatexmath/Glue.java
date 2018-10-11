@@ -46,6 +46,9 @@
 
 package org.scilab.forge.jlatexmath;
 
+import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.GlueBox;
+
 /**
  * Represents glue by its 3 components. Contains the "glue rules".
  */

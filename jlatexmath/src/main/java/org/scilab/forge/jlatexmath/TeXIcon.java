@@ -58,6 +58,10 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.Icon;
 
+import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.HorizontalBox;
+import org.scilab.forge.jlatexmath.ui.VerticalBox;
+
 /**
  * An {@link javax.swing.Icon} implementation that will paint the TeXFormula
  * that created it.

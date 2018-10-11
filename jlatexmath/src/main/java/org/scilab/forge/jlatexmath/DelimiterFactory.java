@@ -48,6 +48,12 @@
 
 package org.scilab.forge.jlatexmath; // NOPMD
 
+import org.scilab.forge.jlatexmath.model.Extension;
+import org.scilab.forge.jlatexmath.model.SymbolAtom;
+import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.CharBox;
+import org.scilab.forge.jlatexmath.ui.VerticalBox;
+
 /**
  * Responsible for creating a box containing a delimiter symbol that exists in
  * different sizes.

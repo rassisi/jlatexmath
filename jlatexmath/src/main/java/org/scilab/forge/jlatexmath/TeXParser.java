@@ -49,12 +49,31 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.scilab.forge.jlatexmath.model.Atom;
+import org.scilab.forge.jlatexmath.model.BigOperatorAtom;
+import org.scilab.forge.jlatexmath.model.BreakMarkAtom;
+import org.scilab.forge.jlatexmath.model.CharAtom;
+import org.scilab.forge.jlatexmath.model.ColorAtom;
+import org.scilab.forge.jlatexmath.model.CumulativeScriptsAtom;
+import org.scilab.forge.jlatexmath.model.EmptyAtom;
+import org.scilab.forge.jlatexmath.model.HlineAtom;
+import org.scilab.forge.jlatexmath.model.JavaFontRenderingAtom;
+import org.scilab.forge.jlatexmath.model.MacroInfo;
+import org.scilab.forge.jlatexmath.model.MathAtom;
+import org.scilab.forge.jlatexmath.model.PhantomAtom;
+import org.scilab.forge.jlatexmath.model.RomanAtom;
+import org.scilab.forge.jlatexmath.model.RowAtom;
+import org.scilab.forge.jlatexmath.model.ScriptsAtom;
+import org.scilab.forge.jlatexmath.model.SpaceAtom;
+import org.scilab.forge.jlatexmath.model.SymbolAtom;
+import org.scilab.forge.jlatexmath.model.UnderscoreAtom;
+
 /**
  * This class implements a parser for LaTeX' formulas.
  */
 public class TeXParser {
 
-	TeXFormula formula;
+	public TeXFormula formula;
 
 	private StringBuffer parseString;
 	private int pos;
@@ -121,7 +140,7 @@ public class TeXParser {
 	private static final char SUBLPAR = '\u208D';
 	private static final char SUBRPAR = '\u208E';
 
-	protected static boolean isLoading = false;
+	public static boolean isLoading = false;
 
 	private static final Set<String> unparsedContents = new HashSet<String>(6);
 	static {

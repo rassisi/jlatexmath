@@ -46,6 +46,12 @@
 
 package org.scilab.forge.jlatexmath;
 
+import org.scilab.forge.jlatexmath.model.Atom;
+import org.scilab.forge.jlatexmath.model.CharAtom;
+import org.scilab.forge.jlatexmath.model.FixedCharAtom;
+import org.scilab.forge.jlatexmath.model.SpaceAtom;
+import org.scilab.forge.jlatexmath.ui.Box;
+
 /**
  * Used by RowAtom. The "textSymbol"-property and the type of an atom can change
  * (according to the TeX-algorithms used). Or this atom can be replaced by a ligature,

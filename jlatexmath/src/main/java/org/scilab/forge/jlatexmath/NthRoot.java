@@ -46,6 +46,13 @@
 
 package org.scilab.forge.jlatexmath;
 
+import org.scilab.forge.jlatexmath.model.Atom;
+import org.scilab.forge.jlatexmath.model.EmptyAtom;
+import org.scilab.forge.jlatexmath.model.SpaceAtom;
+import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.HorizontalBox;
+import org.scilab.forge.jlatexmath.ui.StrutBox;
+
 /**
  * An atom representing an nth-root construction.
  */

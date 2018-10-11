@@ -46,6 +46,8 @@
 
 package org.scilab.forge.jlatexmath;
 
+import org.scilab.forge.jlatexmath.model.Extension;
+
 /**
  * An interface representing a "TeXFont", which is responsible for all the necessary
  * fonts and font information.

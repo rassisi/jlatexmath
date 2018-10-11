@@ -46,6 +46,10 @@
 
 package org.scilab.forge.jlatexmath;
 
+import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.StrutBox;
+import org.scilab.forge.jlatexmath.ui.VerticalBox;
+
 /**
  * A box representing another box with a horizontal rule above it, with
  * appropriate kerning.

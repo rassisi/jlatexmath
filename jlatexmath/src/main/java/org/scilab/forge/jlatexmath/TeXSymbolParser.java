@@ -52,6 +52,7 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.scilab.forge.jlatexmath.model.SymbolAtom;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

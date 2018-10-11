@@ -50,6 +50,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
+import org.scilab.forge.jlatexmath.model.Atom;
+import org.scilab.forge.jlatexmath.ui.Box;
+
 /**
  * A box representing a horizontal line.
  */

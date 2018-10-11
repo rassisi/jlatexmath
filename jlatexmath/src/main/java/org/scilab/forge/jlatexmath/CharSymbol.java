@@ -46,6 +46,8 @@
 
 package org.scilab.forge.jlatexmath;
 
+import org.scilab.forge.jlatexmath.model.Atom;
+
 /**
  * An common superclass for atoms that represent one single character
  * and access the font information.

@@ -68,6 +68,22 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 
+import org.scilab.forge.jlatexmath.model.Atom;
+import org.scilab.forge.jlatexmath.model.BreakMarkAtom;
+import org.scilab.forge.jlatexmath.model.ColorAtom;
+import org.scilab.forge.jlatexmath.model.EmptyAtom;
+import org.scilab.forge.jlatexmath.model.MacroInfo;
+import org.scilab.forge.jlatexmath.model.MatrixAtom;
+import org.scilab.forge.jlatexmath.model.MiddleAtom;
+import org.scilab.forge.jlatexmath.model.RomanAtom;
+import org.scilab.forge.jlatexmath.model.RowAtom;
+import org.scilab.forge.jlatexmath.model.SpaceAtom;
+import org.scilab.forge.jlatexmath.model.TypedAtom;
+import org.scilab.forge.jlatexmath.model.VCenteredAtom;
+import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.HorizontalBox;
+import org.scilab.forge.jlatexmath.ui.StrutBox;
+
 /**
  * Represents a logical mathematical formula that will be displayed (by creating
  * a {@link TeXIcon} from it and painting it) using algorithms that are based on
@@ -109,7 +125,7 @@ public class TeXFormula {
 	public static float FONT_SCALE_FACTOR = 100f;
 
 	// for comparing floats with 0
-	protected static final float PREC = 0.0000001f;
+	public static final float PREC = 0.0000001f;
 
 	// predefined TeXFormula's
 	public static Map<String, TeXFormula> predefinedTeXFormulas = new HashMap<String, TeXFormula>(150);
@@ -123,7 +139,7 @@ public class TeXFormula {
 
 	public List<MiddleAtom> middle = new LinkedList<MiddleAtom>();
 
-	protected Map<String, String> jlmXMLMap;
+	public Map<String, String> jlmXMLMap;
 	private TeXParser parser;
 
 	static {
@@ -303,11 +319,11 @@ public class TeXFormula {
 	 * @param s the string to be parsed
 	 * @throws ParseException if the string could not be parsed correctly
 	 */
-	protected TeXFormula(TeXParser tp, String s) throws ParseException {
+	public TeXFormula(TeXParser tp, String s) throws ParseException {
 		this(tp, s, null);
 	}
 
-	protected TeXFormula(TeXParser tp, String s, boolean firstpass) throws ParseException {
+	public TeXFormula(TeXParser tp, String s, boolean firstpass) throws ParseException {
 		this.textStyle = null;
 		this.jlmXMLMap = tp.formula.jlmXMLMap;
 		boolean isPartial = tp.getIsPartial();
@@ -344,7 +360,7 @@ public class TeXFormula {
 		}
 	}
 
-	protected TeXFormula(TeXParser tp, String s, String textStyle, boolean firstpass, boolean space)
+	public TeXFormula(TeXParser tp, String s, String textStyle, boolean firstpass, boolean space)
 			throws ParseException {
 		this.textStyle = textStyle;
 		this.jlmXMLMap = tp.formula.jlmXMLMap;
@@ -1062,10 +1078,10 @@ public class TeXFormula {
 		}
 	}
 
-	static class FontInfos {
+	public static class FontInfos {
 
-		String sansserif;
-		String serif;
+		public String sansserif;
+		public String serif;
 
 		FontInfos(String sansserif, String serif) {
 			this.sansserif = sansserif;

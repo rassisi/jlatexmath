@@ -53,11 +53,11 @@ package org.scilab.forge.jlatexmath;
  */
 public class SymbolMappingNotFoundException extends JMathTeXException {
 
-    private static final long serialVersionUID = 2659192520874275262L;
+	private static final long serialVersionUID = 2659192520874275262L;
 
-    protected SymbolMappingNotFoundException(String symbolName) {
-        super("No mapping found for the symbol '" + symbolName + "'! "
-              + "Insert a <" + DefaultTeXFontParser.SYMBOL_MAPPING_EL
-              + ">-element in '" + DefaultTeXFontParser.RESOURCE_NAME + "'.");
-    }
+	public SymbolMappingNotFoundException(String symbolName) {
+		super("No mapping found for the symbol '" + symbolName + "'! " + "Insert a <"
+				+ DefaultTeXFontParser.SYMBOL_MAPPING_EL + ">-element in '" + DefaultTeXFontParser.RESOURCE_NAME
+				+ "'.");
+	}
 }
