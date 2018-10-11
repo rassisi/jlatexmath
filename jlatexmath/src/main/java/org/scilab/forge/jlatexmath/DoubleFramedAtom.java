@@ -50,15 +50,15 @@ package org.scilab.forge.jlatexmath;
  */
 public class DoubleFramedAtom extends FBoxAtom {
 
-    public DoubleFramedAtom(Atom base) {
-        super(base);
-    }
+	public DoubleFramedAtom(Atom base) {
+		super(base);
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        Box bbase = base.createBox(env);
-        float drt = env.getTeXFont().getDefaultRuleThickness(env.getStyle());
-        float space = INTERSPACE * SpaceAtom.getFactor(TeXConstants.UNIT_EM, env);
-        float sspace = 1.5f * drt + 0.5f * SpaceAtom.getFactor(TeXConstants.UNIT_POINT, env);
-        return new FramedBox(new FramedBox(bbase, 0.75f * drt, space), 1.5f * drt, sspace);
-    }
+	public Box createBox(TeXEnvironment env) {
+		Box bbase = base.createBox(env);
+		float drt = env.getTeXFont().getDefaultRuleThickness(env.getStyle());
+		float space = INTERSPACE * SpaceAtom.getFactor(TeXConstants.UNIT_EM, env);
+		float sspace = 1.5f * drt + 0.5f * SpaceAtom.getFactor(TeXConstants.UNIT_POINT, env);
+		return new FramedBox(this, new FramedBox(this, bbase, 0.75f * drt, space), 1.5f * drt, sspace);
+	}
 }

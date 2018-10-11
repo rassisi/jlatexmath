@@ -53,18 +53,19 @@ import java.awt.Graphics2D;
  */
 public class StrutBox extends Box {
 
-    public StrutBox(float w, float h, float d, float s) {
-        width = w;
-        height = h;
-        depth = d;
-        shift = s;
-    }
+	public StrutBox(Atom atom, float w, float h, float d, float s) {
+		super(atom);
+		width = w;
+		height = h;
+		depth = d;
+		shift = s;
+	}
 
-    public void draw(Graphics2D g2, float x, float y) {
-        // no visual effect
-    }
+	public void draw(Graphics2D g2, float x, float y) {
+		// no visual effect
+	}
 
-    public int getLastFontId() {
-        return TeXFont.NO_FONT;
-    }
+	public int getLastFontId() {
+		return TeXFont.NO_FONT;
+	}
 }

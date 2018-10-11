@@ -61,91 +61,92 @@ import java.util.Map;
  */
 public class GraphicsAtom extends Atom {
 
-    private Image image = null;
-    private BufferedImage bimage;
-    private Label c;
-    private int w, h;
+	private Image image = null;
+	private BufferedImage bimage;
+	private Label c;
+	private int w, h;
 
-    private Atom base;
-    private boolean first = true;
-    private int interp = -1;
+	private Atom base;
+	private boolean first = true;
+	private int interp = -1;
 
-    public GraphicsAtom(String path, String option) {
-        File f = new File(path);
-        if (!f.exists()) {
-            try {
-                URL url = new URL(path);
-                image = Toolkit.getDefaultToolkit().getImage(url);
-            } catch (MalformedURLException e) {
-                image = null;
-            }
-        } else {
-            image = Toolkit.getDefaultToolkit().getImage(path);
-        }
+	public GraphicsAtom(String path, String option) {
+		File f = new File(path);
+		if (!f.exists()) {
+			try {
+				URL url = new URL(path);
+				image = Toolkit.getDefaultToolkit().getImage(url);
+			} catch (MalformedURLException e) {
+				image = null;
+			}
+		} else {
+			image = Toolkit.getDefaultToolkit().getImage(path);
+		}
 
-        if (image != null) {
-            c = new Label();
-            MediaTracker tracker = new MediaTracker(c);
-            tracker.addImage(image, 0);
-            try {
-                tracker.waitForID(0);
-            } catch (InterruptedException e) {
-                image = null;
-            }
-        }
-        draw();
-        buildAtom(option);
-    }
+		if (image != null) {
+			c = new Label();
+			MediaTracker tracker = new MediaTracker(c);
+			tracker.addImage(image, 0);
+			try {
+				tracker.waitForID(0);
+			} catch (InterruptedException e) {
+				image = null;
+			}
+		}
+		draw();
+		buildAtom(option);
+	}
 
-    protected void buildAtom(String option) {
-        base = this;
-        Map<String, String> options = ParseOption.parseMap(option);
-        if (options.containsKey("width") || options.containsKey("height")) {
-            base = new ResizeAtom(base, options.get("width"), options.get("height"), options.containsKey("keepaspectratio"));
-        }
-        if (options.containsKey("scale")) {
-            double scl = Double.parseDouble(options.get("scale"));
-            base = new ScaleAtom(base, scl, scl);
-        }
-        if (options.containsKey("angle") || options.containsKey("origin")) {
-            base = new RotateAtom(base, options.get("angle"), options.get("origin"));
-        }
-        if (options.containsKey("interpolation")) {
-            String meth = options.get("interpolation");
-            if (meth.equalsIgnoreCase("bilinear")) {
-                interp = GraphicsBox.BILINEAR;
-            } else if (meth.equalsIgnoreCase("bicubic")) {
-                interp = GraphicsBox.BICUBIC;
-            } else if (meth.equalsIgnoreCase("nearest_neighbor")) {
-                interp = GraphicsBox.NEAREST_NEIGHBOR;
-            }
-        }
-    }
+	protected void buildAtom(String option) {
+		base = this;
+		Map<String, String> options = ParseOption.parseMap(option);
+		if (options.containsKey("width") || options.containsKey("height")) {
+			base = new ResizeAtom(base, options.get("width"), options.get("height"),
+					options.containsKey("keepaspectratio"));
+		}
+		if (options.containsKey("scale")) {
+			double scl = Double.parseDouble(options.get("scale"));
+			base = new ScaleAtom(base, scl, scl);
+		}
+		if (options.containsKey("angle") || options.containsKey("origin")) {
+			base = new RotateAtom(base, options.get("angle"), options.get("origin"));
+		}
+		if (options.containsKey("interpolation")) {
+			String meth = options.get("interpolation");
+			if (meth.equalsIgnoreCase("bilinear")) {
+				interp = GraphicsBox.BILINEAR;
+			} else if (meth.equalsIgnoreCase("bicubic")) {
+				interp = GraphicsBox.BICUBIC;
+			} else if (meth.equalsIgnoreCase("nearest_neighbor")) {
+				interp = GraphicsBox.NEAREST_NEIGHBOR;
+			}
+		}
+	}
 
-    public void draw() {
-        if (image != null) {
-            w = image.getWidth(c);
-            h = image.getHeight(c);
-            bimage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = bimage.createGraphics();
-            g2d.drawImage(image, 0, 0, null);
-            g2d.dispose();
-        }
-    }
+	public void draw() {
+		if (image != null) {
+			w = image.getWidth(c);
+			h = image.getHeight(c);
+			bimage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2d = bimage.createGraphics();
+			g2d.drawImage(image, 0, 0, null);
+			g2d.dispose();
+		}
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        if (image != null) {
-            if (first) {
-                first = false;
-                return base.createBox(env);
-            } else {
-                env.isColored = true;
-                float width = w * SpaceAtom.getFactor(TeXConstants.UNIT_PIXEL, env);
-                float height = h * SpaceAtom.getFactor(TeXConstants.UNIT_PIXEL, env);
-                return new GraphicsBox(bimage, width, height, env.getSize(), interp);
-            }
-        }
+	public Box doCreateBox(TeXEnvironment env) {
+		if (image != null) {
+			if (first) {
+				first = false;
+				return base.createBox(env);
+			} else {
+				env.isColored = true;
+				float width = w * SpaceAtom.getFactor(TeXConstants.UNIT_PIXEL, env);
+				float height = h * SpaceAtom.getFactor(TeXConstants.UNIT_PIXEL, env);
+				return new GraphicsBox(this, bimage, width, height, env.getSize(), interp);
+			}
+		}
 
-        return new TeXFormula("\\text{ No such image file ! }").root.createBox(env);
-    }
+		return new TeXFormula("\\text{ No such image file ! }").root.createBox(env);
+	}
 }

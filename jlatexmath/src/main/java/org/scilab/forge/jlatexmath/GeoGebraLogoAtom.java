@@ -47,19 +47,19 @@ package org.scilab.forge.jlatexmath;
 
 public class GeoGebraLogoAtom extends Atom {
 
-    public GeoGebraLogoAtom() {
-    }
+	public GeoGebraLogoAtom() {
+	}
 
-    public int getLeftType() {
-        return TeXConstants.TYPE_ORDINARY;
-    }
+	public int getLeftType() {
+		return TeXConstants.TYPE_ORDINARY;
+	}
 
-    public int getRightType() {
-        return TeXConstants.TYPE_ORDINARY;
-    }
+	public int getRightType() {
+		return TeXConstants.TYPE_ORDINARY;
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        CharBox o = new CharBox(env.getTeXFont().getDefaultChar('o', env.getStyle()));
-        return new GeoGebraLogoBox(o.width, o.height);
-    }
+	public Box doCreateBox(TeXEnvironment env) {
+		CharBox o = new CharBox(this, env.getTeXFont().getDefaultChar('o', env.getStyle()));
+		return new GeoGebraLogoBox(this, o.width, o.height);
+	}
 }

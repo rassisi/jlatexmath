@@ -50,23 +50,23 @@ package org.scilab.forge.jlatexmath;
  */
 public class FcscoreAtom extends Atom {
 
-    private int N;
+	private int N;
 
-    public FcscoreAtom(int N) {
-        this.N = N;
-    }
+	public FcscoreAtom(int N) {
+		this.N = N;
+	}
 
-    public int getLeftType() {
-        return TeXConstants.TYPE_ORDINARY;
-    }
+	public int getLeftType() {
+		return TeXConstants.TYPE_ORDINARY;
+	}
 
-    public int getRightType() {
-        return TeXConstants.TYPE_ORDINARY;
-    }
+	public int getRightType() {
+		return TeXConstants.TYPE_ORDINARY;
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        final float factor = 12 * SpaceAtom.getFactor(TeXConstants.UNIT_MU, env);
+	public Box doCreateBox(TeXEnvironment env) {
+		final float factor = 12 * SpaceAtom.getFactor(TeXConstants.UNIT_MU, env);
 
-        return new FcscoreBox(N == 5 ? 4 : N, factor * 1f, factor * 0.07f, factor * 0.125f, N == 5);
-    }
+		return new FcscoreBox(this, N == 5 ? 4 : N, factor * 1f, factor * 0.07f, factor * 0.125f, N == 5);
+	}
 }

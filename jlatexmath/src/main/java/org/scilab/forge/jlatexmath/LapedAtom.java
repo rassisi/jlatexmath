@@ -50,30 +50,30 @@ package org.scilab.forge.jlatexmath;
  */
 public class LapedAtom extends Atom {
 
-    private Atom at;
-    private char type;
+	private Atom at;
+	private char type;
 
-    public LapedAtom(Atom at, char type) {
-        this.at = at;
-        this.type = type;
-    }
+	public LapedAtom(Atom at, char type) {
+		this.at = at;
+		this.type = type;
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        Box b = at.createBox(env);
-        VerticalBox vb = new VerticalBox();
-        vb.add(b);
-        vb.setWidth(0);
-        switch (type) {
-        case 'l' :
-            b.setShift(- b.getWidth());
-            break;
-        case 'r' :
-            b.setShift(0);
-            break;
-        default :
-            b.setShift(- b.getWidth() / 2);
-        }
+	public Box doCreateBox(TeXEnvironment env) {
+		Box b = at.createBox(env);
+		VerticalBox vb = new VerticalBox(this);
+		vb.add(b);
+		vb.setWidth(0);
+		switch (type) {
+		case 'l':
+			b.setShift(-b.getWidth());
+			break;
+		case 'r':
+			b.setShift(0);
+			break;
+		default:
+			b.setShift(-b.getWidth() / 2);
+		}
 
-        return vb;
-    }
+		return vb;
+	}
 }

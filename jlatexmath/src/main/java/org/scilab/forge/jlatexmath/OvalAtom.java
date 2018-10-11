@@ -50,11 +50,11 @@ package org.scilab.forge.jlatexmath;
  */
 public class OvalAtom extends FBoxAtom {
 
-    public OvalAtom(Atom base) {
-        super(base);
-    }
+	public OvalAtom(Atom base) {
+		super(base);
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        return new OvalBox((FramedBox) super.createBox(env));
-    }
+	public Box createBox(TeXEnvironment env) {
+		return new OvalBox(this, (FramedBox) super.createBox(env));
+	}
 }

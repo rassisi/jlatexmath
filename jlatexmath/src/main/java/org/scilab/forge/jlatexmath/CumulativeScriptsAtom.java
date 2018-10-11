@@ -50,31 +50,31 @@ package org.scilab.forge.jlatexmath;
  */
 public class CumulativeScriptsAtom extends Atom {
 
-    private Atom base;
-    private RowAtom sup;
-    private RowAtom sub;
+	private Atom base;
+	private RowAtom sup;
+	private RowAtom sub;
 
-    public CumulativeScriptsAtom(Atom base, Atom sub, Atom sup) {
-        super();
-        if (base instanceof CumulativeScriptsAtom) {
-            CumulativeScriptsAtom at = (CumulativeScriptsAtom) base;
-            this.base = at.base;
-            at.sup.add(sup);
-            at.sub.add(sub);
-            this.sup = at.sup;
-            this.sub = at.sub;
-        } else {
-            if (base == null) {
-                this.base = new PhantomAtom(new CharAtom('M', "mathnormal"), false, true, true);
-            } else {
-                this.base = base;
-            }
-            this.sup = new RowAtom(sup);
-            this.sub = new RowAtom(sub);
-        }
-    }
+	public CumulativeScriptsAtom(Atom base, Atom sub, Atom sup) {
+		super();
+		if (base instanceof CumulativeScriptsAtom) {
+			CumulativeScriptsAtom at = (CumulativeScriptsAtom) base;
+			this.base = at.base;
+			at.sup.add(sup);
+			at.sub.add(sub);
+			this.sup = at.sup;
+			this.sub = at.sub;
+		} else {
+			if (base == null) {
+				this.base = new PhantomAtom(new CharAtom('M', "mathnormal"), false, true, true);
+			} else {
+				this.base = base;
+			}
+			this.sup = new RowAtom(sup);
+			this.sub = new RowAtom(sub);
+		}
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        return new ScriptsAtom(base, sub, sup).createBox(env);
-    }
+	public Box doCreateBox(TeXEnvironment env) {
+		return new ScriptsAtom(base, sub, sup).createBox(env);
+	}
 }

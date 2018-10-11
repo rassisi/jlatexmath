@@ -50,22 +50,22 @@ package org.scilab.forge.jlatexmath;
  */
 public class BoldAtom extends Atom {
 
-    private Atom base;
+	private Atom base;
 
-    public BoldAtom(Atom base) {
-        this.base = base;
-    }
+	public BoldAtom(Atom base) {
+		this.base = base;
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        Box box;
-        if (base != null) {
-            env = env.copy(env.getTeXFont().copy());
-            env.getTeXFont().setBold(true);
-            box = base.createBox(env);
-        } else {
-            box = new StrutBox(0, 0, 0, 0);
-        }
+	public Box doCreateBox(TeXEnvironment env) {
+		Box box;
+		if (base != null) {
+			env = env.copy(env.getTeXFont().copy());
+			env.getTeXFont().setBold(true);
+			box = base.createBox(env);
+		} else {
+			box = new StrutBox(this, 0, 0, 0, 0);
+		}
 
-        return box;
-    }
+		return box;
+	}
 }

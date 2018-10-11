@@ -50,48 +50,48 @@ package org.scilab.forge.jlatexmath;
  */
 public class VlineAtom extends Atom {
 
-    private float height;
-    private float shift;
-    private int n;
+	private float height;
+	private float shift;
+	private int n;
 
-    public VlineAtom(int n) {
-        this.n = n;
-    }
+	public VlineAtom(int n) {
+		this.n = n;
+	}
 
-    public void setHeight(float height) {
-        this.height = height;
-    }
+	public void setHeight(float height) {
+		this.height = height;
+	}
 
-    public void setShift(float shift) {
-        this.shift = shift;
-    }
+	public void setShift(float shift) {
+		this.shift = shift;
+	}
 
-    public float getWidth(TeXEnvironment env) {
-        if (n != 0) {
-            float drt = env.getTeXFont().getDefaultRuleThickness(env.getStyle());
-            return drt * (3 * n - 2);
-        } else
-            return 0;
-    }
+	public float getWidth(TeXEnvironment env) {
+		if (n != 0) {
+			float drt = env.getTeXFont().getDefaultRuleThickness(env.getStyle());
+			return drt * (3 * n - 2);
+		} else
+			return 0;
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        if (n != 0) {
-            float drt = env.getTeXFont().getDefaultRuleThickness(env.getStyle());
-            Box b = new HorizontalRule(height, drt, shift);
-            Box sep = new StrutBox(2 * drt, 0, 0, 0);
-            HorizontalBox hb = new HorizontalBox();
-            for (int i = 0; i < n - 1; i++) {
-                hb.add(b);
-                hb.add(sep);
-            }
+	public Box doCreateBox(TeXEnvironment env) {
+		if (n != 0) {
+			float drt = env.getTeXFont().getDefaultRuleThickness(env.getStyle());
+			Box b = new HorizontalRule(this, height, drt, shift);
+			Box sep = new StrutBox(this, 2 * drt, 0, 0, 0);
+			HorizontalBox hb = new HorizontalBox(this);
+			for (int i = 0; i < n - 1; i++) {
+				hb.add(b);
+				hb.add(sep);
+			}
 
-            if (n > 0) {
-                hb.add(b);
-            }
+			if (n > 0) {
+				hb.add(b);
+			}
 
-            return hb;
-        }
+			return hb;
+		}
 
-        return new StrutBox(0, 0, 0, 0);
-    }
+		return new StrutBox(this, 0, 0, 0, 0);
+	}
 }

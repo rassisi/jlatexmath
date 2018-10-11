@@ -47,16 +47,17 @@
 package org.scilab.forge.jlatexmath;
 
 /**
- * A box representing another box with a horizontal rule above it, with appropriate
- * kerning.
+ * A box representing another box with a horizontal rule above it, with
+ * appropriate kerning.
  */
 public class OverBar extends VerticalBox {
 
-    public OverBar(Box b, float kern, float thickness) {
-        // construct vertical box
-        add(new StrutBox(0, thickness, 0, 0));
-        add(new HorizontalRule(thickness, b.getWidth(), 0));
-        add(new StrutBox(0, kern, 0, 0));
-        add(b);
-    }
+	public OverBar(Box b, float kern, float thickness) {
+		super(b.getAtom());
+		// construct vertical box
+		add(new StrutBox(getAtom(), 0, thickness, 0, 0));
+		add(new HorizontalRule(getAtom(), thickness, b.getWidth(), 0));
+		add(new StrutBox(getAtom(), 0, kern, 0, 0));
+		add(b);
+	}
 }

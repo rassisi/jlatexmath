@@ -50,19 +50,20 @@ package org.scilab.forge.jlatexmath;
  */
 public class RuleAtom extends Atom {
 
-    private int wunit, hunit, runit;
-    private float w, h, r;
+	private int wunit, hunit, runit;
+	private float w, h, r;
 
-    public RuleAtom(int wunit, float width, int hunit, float height, int runit, float raise) {
-        this.wunit = wunit;
-        this.hunit = hunit;
-        this.runit = runit;
-        this.w = width;
-        this.h = height;
-        this.r = raise;
-    }
+	public RuleAtom(int wunit, float width, int hunit, float height, int runit, float raise) {
+		this.wunit = wunit;
+		this.hunit = hunit;
+		this.runit = runit;
+		this.w = width;
+		this.h = height;
+		this.r = raise;
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        return new HorizontalRule(h * SpaceAtom.getFactor(hunit, env), w * SpaceAtom.getFactor(wunit, env), r * SpaceAtom.getFactor(runit, env));
-    }
+	public Box doCreateBox(TeXEnvironment env) {
+		return new HorizontalRule(this, h * SpaceAtom.getFactor(hunit, env), w * SpaceAtom.getFactor(wunit, env),
+				r * SpaceAtom.getFactor(runit, env));
+	}
 }

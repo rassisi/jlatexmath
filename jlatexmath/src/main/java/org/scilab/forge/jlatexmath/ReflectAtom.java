@@ -50,14 +50,14 @@ package org.scilab.forge.jlatexmath;
  */
 public class ReflectAtom extends Atom {
 
-    private Atom base;
+	private Atom base;
 
-    public ReflectAtom(Atom base) {
-        this.type = base.type;
-        this.base = base;
-    }
+	public ReflectAtom(Atom base) {
+		this.type = base.type;
+		this.base = base;
+	}
 
-    public Box createBox(TeXEnvironment env) {
-        return new ReflectBox(base.createBox(env));
-    }
+	public Box doCreateBox(TeXEnvironment env) {
+		return new ReflectBox(this, base.createBox(env));
+	}
 }
