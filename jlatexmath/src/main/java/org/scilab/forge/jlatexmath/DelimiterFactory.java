@@ -48,6 +48,7 @@
 
 package org.scilab.forge.jlatexmath; // NOPMD
 
+import org.scilab.forge.jlatexmath.model.Atom;
 import org.scilab.forge.jlatexmath.model.Extension;
 import org.scilab.forge.jlatexmath.model.SymbolAtom;
 import org.scilab.forge.jlatexmath.ui.Box;
@@ -74,7 +75,7 @@ public class DelimiterFactory {
 
 		if (i <= size && !tf.hasNextLarger(c)) {
 			CharBox A = new CharBox(symbol, tf.getChar('A', "mathnormal", style));
-			Box b = create(symbol.getName(), env, size * (A.getHeight() + A.getDepth()));
+			Box b = create(symbol, symbol.getName(), env, size * (A.getHeight() + A.getDepth()));
 			return b;
 		}
 
@@ -90,7 +91,7 @@ public class DelimiterFactory {
 	 * @return the box representing the delimiter variant that fits best according
 	 *         to the required minimum size.
 	 */
-	public static Box create(String symbol, TeXEnvironment env, float minHeight) {
+	public static Box create(Atom atom, String symbol, TeXEnvironment env, float minHeight) {
 		TeXFont tf = env.getTeXFont();
 		int style = env.getStyle();
 		Char c = tf.getChar(symbol, style);
@@ -110,28 +111,28 @@ public class DelimiterFactory {
 			return new CharBox(null, c);
 		} else if (tf.isExtensionChar(c)) {
 			// construct tall enough vertical box
-			VerticalBox vBox = new VerticalBox(null);
+			VerticalBox vBox = new VerticalBox(atom);
 			Extension ext = tf.getExtension(c, style); // extension info
 
 			if (ext.hasTop()) { // insert top part
 				c = ext.getTop();
-				vBox.add(new CharBox(null, c));
+				vBox.add(new CharBox(atom, c));
 			}
 
 			boolean middle = ext.hasMiddle();
 			if (middle) { // insert middle part
 				c = ext.getMiddle();
-				vBox.add(new CharBox(null, c));
+				vBox.add(new CharBox(atom, c));
 			}
 
 			if (ext.hasBottom()) { // insert bottom part
 				c = ext.getBottom();
-				vBox.add(new CharBox(null, c));
+				vBox.add(new CharBox(atom, c));
 			}
 
 			// insert repeatable part until tall enough
 			c = ext.getRepeat();
-			CharBox rep = new CharBox(null, c);
+			CharBox rep = new CharBox(atom, c);
 			while (vBox.getHeight() + vBox.getDepth() <= minHeight) {
 				if (ext.hasTop() && ext.hasBottom()) {
 					vBox.add(1, rep);
@@ -146,6 +147,6 @@ public class DelimiterFactory {
 			return vBox;
 		} else
 			// no extensions, so return tallest possible character
-			return new CharBox(null, c);
+			return new CharBox(atom, c);
 	}
 }

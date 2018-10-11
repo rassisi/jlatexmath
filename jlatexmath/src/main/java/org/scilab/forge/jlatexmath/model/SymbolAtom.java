@@ -172,6 +172,11 @@ public class SymbolAtom extends CharSymbol {
 	 * @throws SymbolNotFoundException if no symbol with the given name was found
 	 */
 	public static SymbolAtom get(String name) throws SymbolNotFoundException {
+
+		if ("prod".equals(name)) {
+			System.out.println();
+		}
+
 		Object obj = symbols.get(name);
 		if (obj == null) // not found
 			throw new SymbolNotFoundException(name);

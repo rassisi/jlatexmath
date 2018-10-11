@@ -1088,4 +1088,9 @@ public class TeXFormula {
 			this.serif = serif;
 		}
 	}
+
+	public Atom getRoot() {
+		return root;
+	}
+
 }

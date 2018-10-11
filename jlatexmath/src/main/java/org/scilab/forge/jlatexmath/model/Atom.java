@@ -56,6 +56,8 @@ import org.scilab.forge.jlatexmath.TeXEnvironment;
 import org.scilab.forge.jlatexmath.ui.Box;
 import org.scilab.forge.jlatexmath.ui.CharBox;
 
+import javafx.geometry.Rectangle2D;
+
 /**
  * An abstract superclass for all logical mathematical constructions that can be
  * a part of a TeXFormula. All subclasses must implement the abstract
@@ -83,8 +85,6 @@ public abstract class Atom implements Cloneable {
 
 	public int alignment = -1;
 
-	public static List<Box> boxes = new ArrayList<Box>();
-
 	// Assisi
 
 	private int caretPosition = -1;
@@ -108,31 +108,56 @@ public abstract class Atom implements Cloneable {
 		return box;
 	}
 
-	public static int findCaretPosition(double x, double y) {
-
+	public static Box findCaretBox(TeXEnvironment texEnvironment, double x, double y) {
 		List<Box> hitBoxes = new ArrayList<Box>();
-		int caret = -1;
-		for (Box b : boxes) {
+		for (Box b : texEnvironment.boxes) {
 			if (b instanceof CharBox) {
 				if (b.getScreenBox() != null) {
-
 					if (b.getScreenBox().contains(x, y)) {
+						String c = getBoxContentDisplay(b.getAtom());
 						hitBoxes.add(b);
-						System.out.println("Hit: " + b.getClass().getSimpleName() + "  at:  " + b.getScreenBox());
+						Rectangle2D r = b.getScreenBox();
+						System.out.println("Hit: " + b.getClass().getSimpleName() + " (" + c + ")  at:  "
+								+ ((int) r.getMinX()) + "," + ((int) r.getMinY()) + "," + ((int) r.getWidth()) + ","
+								+ ((int) r.getHeight()));
 					}
 				}
 			}
 		}
 
 		if (!hitBoxes.isEmpty()) {
-			return hitBoxes.get(hitBoxes.size() - 1).getCaretPosition();
+			return hitBoxes.get(hitBoxes.size() - 1);
 		}
 
-		return caret;
+		return null;
 	}
 
-	public static void clear() {
-		boxes.clear();
+	private static String getBoxContentDisplay(Atom a) {
+		String c = " ";
+		if (a instanceof CharAtom) {
+			char cc = ((CharAtom) a).getC();
+			c = String.valueOf(cc);
+		} else if (a instanceof SymbolAtom) {
+			SymbolAtom s = (SymbolAtom) a;
+			c = "Symbol: " + s.getName() + ", " + s.getUnicode();
+		} else if (a instanceof TextStyleAtom) {
+			TextStyleAtom s = (TextStyleAtom) a;
+			c = "TextStyle: " + getBoxContentDisplay(s.getAtom());
+		} else if (a instanceof ScriptsAtom) {
+			ScriptsAtom s = (ScriptsAtom) a;
+			Atom base = s.getBase();
+			Atom subScript = s.getSubscript();
+			Atom superScript = s.getSuperscript();
+			c = "Script: " + getBoxContentDisplay(base) + getBoxContentDisplay(subScript)
+					+ getBoxContentDisplay(superScript);
+		} else {
+			c = "" + a;
+		}
+		return c;
+	}
+
+	public static void clear(TeXEnvironment texEnvironment) {
+//		texEnvironment.boxes.clear();
 	}
 
 	protected abstract Box doCreateBox(TeXEnvironment env);
@@ -175,7 +200,9 @@ public abstract class Atom implements Cloneable {
 	}
 
 	public void setCaretPosition(int caretPosition) {
-		this.caretPosition = caretPosition;
+		if (this.caretPosition == -1) {
+			this.caretPosition = caretPosition;
+		}
 	}
 
 	public TeXEnvironment getTexEnvironment() {

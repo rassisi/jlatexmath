@@ -64,6 +64,7 @@ public class CharBox extends Box {
 	private final CharFont cf;
 	private final float size;
 	private float italic;
+	private Char c;
 
 	private final char[] arr = new char[1];
 
@@ -75,6 +76,7 @@ public class CharBox extends Box {
 	 */
 	public CharBox(Atom atom, Char c) {
 		super(atom);
+		this.c = c;
 		cf = c.getCharFont();
 		size = c.getMetrics().getSize();
 		width = c.getWidth();
@@ -146,4 +148,9 @@ public class CharBox extends Box {
 //		}
 		return super.getCaretPosition();
 	}
+
+	public Char getC() {
+		return c;
+	}
+
 }

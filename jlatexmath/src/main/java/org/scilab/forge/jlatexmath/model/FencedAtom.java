@@ -136,7 +136,7 @@ public class FencedAtom extends Atom {
 			for (int i = 0; i < middle.size(); i++) {
 				MiddleAtom at = middle.get(i);
 				if (at.base instanceof SymbolAtom) {
-					Box b = DelimiterFactory.create(((SymbolAtom) at.base).getName(), env, minHeight);
+					Box b = DelimiterFactory.create(at.base, ((SymbolAtom) at.base).getName(), env, minHeight);
 					center(b, axis);
 					at.box = b;
 				}
@@ -148,7 +148,7 @@ public class FencedAtom extends Atom {
 
 		// left delimiter
 		if (left != null) {
-			Box b = DelimiterFactory.create(left.getName(), env, minHeight);
+			Box b = DelimiterFactory.create(left, left.getName(), env, minHeight);
 			center(b, axis);
 			hBox.add(b);
 		}
@@ -168,7 +168,7 @@ public class FencedAtom extends Atom {
 
 		// right delimiter
 		if (right != null) {
-			Box b = DelimiterFactory.create(right.getName(), env, minHeight);
+			Box b = DelimiterFactory.create(right, right.getName(), env, minHeight);
 			center(b, axis);
 			hBox.add(b);
 		}

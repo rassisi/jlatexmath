@@ -877,26 +877,26 @@ public class TeXParser {
 
 		if (at.getRightType() == TeXConstants.TYPE_BIG_OPERATOR) {
 			at = new BigOperatorAtom(at, first, second);
-			at.setCaretPosition(pos);
+			at.setCaretPosition(spos);
 			return at;
 		} else if (at instanceof OverUnderDelimiter) {
 			if (((OverUnderDelimiter) at).isOver()) {
 				if (second != null) {
 					((OverUnderDelimiter) at).addScript(second);
 					at = new ScriptsAtom(at, first, null);
-					at.setCaretPosition(pos);
+					at.setCaretPosition(spos);
 					return at;
 				}
 			} else if (first != null) {
 				((OverUnderDelimiter) at).addScript(first);
 				at = new ScriptsAtom(at, null, second);
-				at.setCaretPosition(pos);
+				at.setCaretPosition(spos);
 				return at;
 			}
 		}
 
 		at = new ScriptsAtom(at, first, second);
-		at.setCaretPosition(pos);
+		at.setCaretPosition(spos);
 		return at;
 	}
 
@@ -1066,7 +1066,7 @@ public class TeXParser {
 			ch = parseString.charAt(pos);
 		} else {
 			Atom at = new EmptyAtom();
-			at.setCaretPosition(pos);
+			at.setCaretPosition(spos);
 			return at;
 		}
 		if (ch == L_GROUP) {
@@ -1080,11 +1080,11 @@ public class TeXParser {
 			if (this.formula.root == null) {
 				RowAtom at = new RowAtom();
 				at.add(tf.root);
-				at.setCaretPosition(pos);
+				at.setCaretPosition(spos);
 				return at;
 			}
 			if (tf.root != null) {
-				tf.root.setCaretPosition(pos);
+				tf.root.setCaretPosition(spos);
 			}
 			return tf.root;
 		}
@@ -1096,14 +1096,14 @@ public class TeXParser {
 				return getArgument();
 			}
 			if (at != null) {
-				at.setCaretPosition(pos);
+				at.setCaretPosition(spos);
 			}
 			return at;
 		}
 
 		Atom at = convertCharacter(ch, true);
 		if (at != null) {
-			at.setCaretPosition(pos);
+			at.setCaretPosition(spos);
 		}
 		pos++;
 		return at;
@@ -1237,7 +1237,7 @@ public class TeXParser {
 						pos++;
 					}
 					at = new JavaFontRenderingAtom(parseString.substring(start, end + 1), fontInfos);
-					at.setCaretPosition(pos);
+					at.setCaretPosition(spos);
 					return at;
 				}
 
@@ -1247,7 +1247,7 @@ public class TeXParser {
 				} else {
 					at = new ColorAtom(new RomanAtom(new TeXFormula("\\text{(Unknown char " + ((int) c) + ")}").root),
 							null, Color.RED);
-					at.setCaretPosition(pos);
+					at.setCaretPosition(spos);
 					return at;
 
 				}
@@ -1255,14 +1255,14 @@ public class TeXParser {
 				if (!ignoreWhiteSpace) {// we are in text mode
 					if (TeXFormula.symbolTextMappings[c] != null) {
 						at = SymbolAtom.get(TeXFormula.symbolTextMappings[c]).setUnicode(c);
-						at.setCaretPosition(pos);
+						at.setCaretPosition(spos);
 						return at;
 
 					}
 				}
 				if (TeXFormula.symbolFormulaMappings != null && TeXFormula.symbolFormulaMappings[c] != null) {
 					at = new TeXFormula(TeXFormula.symbolFormulaMappings[c]).root;
-					at.setCaretPosition(pos);
+					at.setCaretPosition(spos);
 					return at;
 
 				}
@@ -1285,7 +1285,7 @@ public class TeXParser {
 			if (fontInfos != null) {
 				if (oneChar) {
 					at = new JavaFontRenderingAtom(Character.toString(c), fontInfos);
-					at.setCaretPosition(pos);
+					at.setCaretPosition(spos);
 					return at;
 				}
 				int start = pos++;
@@ -1299,7 +1299,7 @@ public class TeXParser {
 					pos++;
 				}
 				at = new JavaFontRenderingAtom(parseString.substring(start, end + 1), fontInfos);
-				at.setCaretPosition(pos);
+				at.setCaretPosition(spos);
 				return at;
 
 			}
@@ -1354,7 +1354,7 @@ public class TeXParser {
 		if (MacroInfo.Commands.get(command) != null) {
 			at = processCommands(command);
 			if (at != null) {
-				at.setCaretPosition(pos);
+				at.setCaretPosition(spos);
 			}
 			return at;
 		}
@@ -1362,7 +1362,7 @@ public class TeXParser {
 		try {
 			at = TeXFormula.get(command).root;
 			if (at != null) {
-				at.setCaretPosition(pos);
+				at.setCaretPosition(spos);
 			}
 			return at;
 
@@ -1370,7 +1370,7 @@ public class TeXParser {
 			try {
 				at = SymbolAtom.get(command);
 				if (at != null) {
-					at.setCaretPosition(pos);
+					at.setCaretPosition(spos);
 				}
 				return at;
 			} catch (SymbolNotFoundException e1) {
@@ -1382,7 +1382,7 @@ public class TeXParser {
 			throw new ParseException("Unknown symbol or command or predefined TeXFormula: '" + command + "'");
 		} else {
 			at = new ColorAtom(new RomanAtom(new TeXFormula("\\backslash " + command).root), null, Color.RED);
-			at.setCaretPosition(pos);
+			at.setCaretPosition(spos);
 			return at;
 		}
 
@@ -1642,4 +1642,9 @@ public class TeXParser {
 
 		return c;
 	}
+
+	public int getSpos() {
+		return spos;
+	}
+
 }

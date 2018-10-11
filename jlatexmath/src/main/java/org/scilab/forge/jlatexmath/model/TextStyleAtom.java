@@ -55,18 +55,23 @@ import org.scilab.forge.jlatexmath.ui.Box;
 public class TextStyleAtom extends Atom {
 
 	private String style;
-	private Atom at;
+	private Atom atom;
 
-	public TextStyleAtom(Atom at, String style) {
+	public TextStyleAtom(Atom atom, String style) {
 		this.style = style;
-		this.at = at;
+		this.atom = atom;
 	}
 
 	public Box doCreateBox(TeXEnvironment env) {
 		String prevStyle = env.getTextStyle();
 		env.setTextStyle(style);
-		Box box = at.createBox(env);
+		Box box = atom.createBox(env);
 		env.setTextStyle(prevStyle);
 		return box;
 	}
+
+	public Atom getAtom() {
+		return atom;
+	}
+
 }

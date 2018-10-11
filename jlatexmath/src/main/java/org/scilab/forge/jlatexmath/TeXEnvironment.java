@@ -49,8 +49,11 @@
 package org.scilab.forge.jlatexmath;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.scilab.forge.jlatexmath.model.SpaceAtom;
+import org.scilab.forge.jlatexmath.ui.Box;
 
 /**
  * Contains the used TeXFont-object, color settings and the current style in
@@ -80,6 +83,12 @@ public class TeXEnvironment {
 	private float interline;
 
 	public boolean isColored = false;
+
+	public List<Box> boxes = new ArrayList<Box>();
+
+	public void clear() {
+		boxes.clear();
+	}
 
 	public TeXEnvironment(int style, TeXFont tf) {
 		this(style, tf, null, null);

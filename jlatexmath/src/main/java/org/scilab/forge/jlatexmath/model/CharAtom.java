@@ -136,4 +136,9 @@ public class CharAtom extends CharSymbol {
 	public String toString() {
 		return "CharAtom: \'" + c + "\'";
 	}
+
+	public char getC() {
+		return c;
+	}
+
 }

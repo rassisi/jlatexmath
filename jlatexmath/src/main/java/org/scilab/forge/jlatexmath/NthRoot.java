@@ -92,7 +92,7 @@ public class NthRoot extends Atom {
 		b.add(new SpaceAtom(TeXConstants.UNIT_MU, 1, 0, 0).createBox(env.crampStyle()));
 		// create root sign
 		float totalH = b.getHeight() + b.getDepth();
-		Box rootSign = DelimiterFactory.create(sqrtSymbol, env, totalH + clr + drt);
+		Box rootSign = DelimiterFactory.create(this, sqrtSymbol, env, totalH + clr + drt);
 
 		// add half the excess to clr
 		float delta = rootSign.getDepth() - (totalH + clr);

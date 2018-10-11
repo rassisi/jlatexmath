@@ -56,6 +56,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 
 import org.scilab.forge.jlatexmath.model.Atom;
+import org.scilab.forge.jlatexmath.model.ScriptsAtom;
 
 /**
  * An abstract graphical representation of a formula, that can be painted. All
@@ -172,7 +173,9 @@ public abstract class Box {
 		this.foreground = fg;
 		this.background = bg;
 		this.atom = atom;
-		Atom.boxes.add(this);
+		if (atom != null && atom.getTexEnvironment() != null) {
+			atom.getTexEnvironment().boxes.add(this);
+		}
 	}
 
 	public void setParent(Box parent) {
@@ -372,11 +375,29 @@ public abstract class Box {
 		g2.setColor(prevColor);
 	}
 
+	public Atom getCaretAtom() {
+		Atom result = null;
+		if (atom != null) {
+			if (atom instanceof ScriptsAtom) {
+				result = atom;
+			}
+			if (atom.getCaretPosition() == -1 && getParent() != null) {
+				result = getParent().getAtom();
+			}
+		}
+		return result;
+	}
+
 	public int getCaretPosition() {
 		int pos = -1;
 		if (getAtom() != null) {
-			pos = getAtom().getCaretPosition();
-			if (pos < 1 && getParent() != null) {
+
+			if (atom instanceof ScriptsAtom) {
+				pos = ((ScriptsAtom) atom).getBase().getCaretPosition();
+			} else {
+				pos = getAtom().getCaretPosition();
+			}
+			if (pos < 0 && getParent() != null) {
 				pos = getParent().getCaretPosition();
 			}
 		}

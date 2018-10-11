@@ -94,7 +94,7 @@ public class OverUnderDelimiter extends Atom {
 
 	public Box doCreateBox(TeXEnvironment env) {
 		Box b = (base == null ? new StrutBox(this, 0, 0, 0, 0) : base.createBox(env));
-		Box del = DelimiterFactory.create(symbol.getName(), env, b.getWidth());
+		Box del = DelimiterFactory.create(symbol, symbol.getName(), env, b.getWidth());
 
 		Box scriptBox = null;
 		if (script != null) {

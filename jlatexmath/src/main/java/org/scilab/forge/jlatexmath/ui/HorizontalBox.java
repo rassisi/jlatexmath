@@ -197,7 +197,7 @@ public class HorizontalBox extends Box {
 
 	@Override
 	protected void drawDebug(Graphics2D g2, float x, float y) {
-		DEBUG = true;
+//		DEBUG = true;
 		markForDEBUG = null;
 		super.drawDebug(g2, x, y);
 		DEBUG = false;
