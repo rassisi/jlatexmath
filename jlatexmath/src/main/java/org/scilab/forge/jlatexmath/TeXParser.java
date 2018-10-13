@@ -56,6 +56,7 @@ import org.scilab.forge.jlatexmath.model.CharAtom;
 import org.scilab.forge.jlatexmath.model.ColorAtom;
 import org.scilab.forge.jlatexmath.model.CumulativeScriptsAtom;
 import org.scilab.forge.jlatexmath.model.EmptyAtom;
+import org.scilab.forge.jlatexmath.model.FencedAtom;
 import org.scilab.forge.jlatexmath.model.HlineAtom;
 import org.scilab.forge.jlatexmath.model.JavaFontRenderingAtom;
 import org.scilab.forge.jlatexmath.model.MacroInfo;
@@ -187,6 +188,11 @@ public class TeXParser {
 	 * @throws ParseException if the string could not be parsed correctly
 	 */
 	public TeXParser(boolean isPartial, String parseString, TeXFormula formula, boolean firstpass) {
+
+		if (TeXEnvironment.originalParseString.length() != parseString.length()) {
+			TeXEnvironment.caretPosition = TeXEnvironment.originalParseString.indexOf(parseString,
+					TeXEnvironment.caretPosition);
+		}
 		this.formula = formula;
 		this.isPartial = isPartial;
 		if (parseString != null) {
@@ -707,6 +713,8 @@ public class TeXParser {
 		}
 	}
 
+	private int startPos;
+
 	/**
 	 * Parse the input string
 	 * 
@@ -716,6 +724,7 @@ public class TeXParser {
 		if (len != 0) {
 			char ch;
 			while (pos < len) {
+				startPos = pos;
 				ch = parseString.charAt(pos);
 
 				switch (ch) {
@@ -729,8 +738,12 @@ public class TeXParser {
 				case ' ':
 					pos++;
 					if (!ignoreWhiteSpace) {// We are in a mbox
-						formula.add(new SpaceAtom());
-						formula.add(new BreakMarkAtom());
+						Atom atom = new SpaceAtom();
+						updateAtom(atom);
+						formula.add(atom);
+						atom = new BreakMarkAtom();
+						updateAtom(atom);
+						formula.add(atom);
 						while (pos < len) {
 							ch = parseString.charAt(pos);
 							if (ch != ' ' || ch != '\t' || ch != '\r')
@@ -750,7 +763,9 @@ public class TeXParser {
 							pos++;
 						}
 
-						formula.add(new MathAtom(new TeXFormula(this, getDollarGroup(DOLLAR), false).root, style));
+						Atom atom = new MathAtom(new TeXFormula(this, getDollarGroup(DOLLAR), false).root, style);
+						updateAtom(atom);
+						formula.add(atom);
 						if (doubleDollar) {
 							if (parseString.charAt(pos) == DOLLAR) {
 								pos++;
@@ -760,6 +775,7 @@ public class TeXParser {
 					break;
 				case ESCAPE:
 					Atom at = processEscape();
+					updateAtom(at);
 					formula.add(at);
 					if (arrayMode && at instanceof HlineAtom) {
 						((ArrayOfAtoms) formula).addRow();
@@ -770,6 +786,7 @@ public class TeXParser {
 					break;
 				case L_GROUP:
 					Atom atom = getArgument();
+					updateAtom(atom);
 					if (atom != null) {
 						atom.type = TeXConstants.TYPE_ORDINARY;
 					}
@@ -783,13 +800,19 @@ public class TeXParser {
 								"Found a closing '" + R_GROUP + "' without an opening '" + L_GROUP + "'!");
 					return;
 				case SUPER_SCRIPT:
-					formula.add(getScripts(ch));
+					atom = getScripts(ch);
+					updateAtom(atom);
+					formula.add(atom);
 					break;
 				case SUB_SCRIPT:
 					if (ignoreWhiteSpace) {
-						formula.add(getScripts(ch));
+						atom = getScripts(ch);
+						updateAtom(atom);
+						formula.add(atom);
 					} else {
-						formula.add(new UnderscoreAtom());
+						atom = new UnderscoreAtom();
+						updateAtom(atom);
+						formula.add(atom);
 						pos++;
 					}
 					break;
@@ -800,12 +823,18 @@ public class TeXParser {
 					pos++;
 					break;
 				case '~':
-					formula.add(new SpaceAtom());
+					atom = new SpaceAtom();
+					updateAtom(atom);
+					formula.add(atom);
 					pos++;
 					break;
 				case PRIME:
 					if (ignoreWhiteSpace) {
-						formula.add(new CumulativeScriptsAtom(getLastAtom(), null, SymbolAtom.get("prime")));
+						Atom at1 = SymbolAtom.get("prime");
+						updateAtom(at1);
+						atom = new CumulativeScriptsAtom(getLastAtom(), null, at1);
+						updateAtom(atom);
+						formula.add(atom);
 					} else {
 						formula.add(convertCharacter(PRIME, true));
 					}
@@ -813,24 +842,43 @@ public class TeXParser {
 					break;
 				case BACKPRIME:
 					if (ignoreWhiteSpace) {
-						formula.add(new CumulativeScriptsAtom(getLastAtom(), null, SymbolAtom.get("backprime")));
+						Atom at1 = SymbolAtom.get("backprime");
+						updateAtom(at1);
+						atom = new CumulativeScriptsAtom(getLastAtom(), null, at1);
+						updateAtom(atom);
+						formula.add(atom);
 					} else {
-						formula.add(convertCharacter(BACKPRIME, true));
+						atom = convertCharacter(BACKPRIME, true);
+						updateAtom(atom);
+						formula.add(atom);
 					}
 					pos++;
 					break;
 				case DQUOTE:
 					if (ignoreWhiteSpace) {
-						formula.add(new CumulativeScriptsAtom(getLastAtom(), null, SymbolAtom.get("prime")));
-						formula.add(new CumulativeScriptsAtom(getLastAtom(), null, SymbolAtom.get("prime")));
+						Atom at1 = SymbolAtom.get("prime");
+						updateAtom(at1);
+						atom = new CumulativeScriptsAtom(getLastAtom(), null, at1);
+						updateAtom(at1);
+						formula.add(atom);
+						atom = new CumulativeScriptsAtom(getLastAtom(), null, at1);
+						updateAtom(at1);
+						formula.add(atom);
 					} else {
-						formula.add(convertCharacter(PRIME, true));
-						formula.add(convertCharacter(PRIME, true));
+						atom = convertCharacter(PRIME, true);
+						updateAtom(atom);
+						formula.add(atom);
+						atom = convertCharacter(PRIME, true);
+						updateAtom(atom);
+						formula.add(atom);
 					}
 					pos++;
 					break;
 				default:
-					formula.add(convertCharacter(ch, false));
+
+					atom = convertCharacter(ch, false);
+					updateAtom(atom);
+					formula.add(atom);
 					pos++;
 				}
 			}
@@ -838,6 +886,18 @@ public class TeXParser {
 
 		if (formula.root == null && !arrayMode) {
 			formula.add(new EmptyAtom());
+		}
+	}
+
+	private void updateAtom(Atom at) {
+		if (at != null) {
+			at.setCaretPosition(startPos);
+			try {
+				int end = Math.min(parseString.length(), startPos + 20);
+				at.parsString = parseString.substring(startPos, end);
+			} catch (Exception ex) {
+				System.out.println();
+			}
 		}
 	}
 
@@ -877,26 +937,22 @@ public class TeXParser {
 
 		if (at.getRightType() == TeXConstants.TYPE_BIG_OPERATOR) {
 			at = new BigOperatorAtom(at, first, second);
-			at.setCaretPosition(spos);
 			return at;
 		} else if (at instanceof OverUnderDelimiter) {
 			if (((OverUnderDelimiter) at).isOver()) {
 				if (second != null) {
 					((OverUnderDelimiter) at).addScript(second);
 					at = new ScriptsAtom(at, first, null);
-					at.setCaretPosition(spos);
 					return at;
 				}
 			} else if (first != null) {
 				((OverUnderDelimiter) at).addScript(first);
 				at = new ScriptsAtom(at, null, second);
-				at.setCaretPosition(spos);
 				return at;
 			}
 		}
 
 		at = new ScriptsAtom(at, first, second);
-		at.setCaretPosition(spos);
 		return at;
 	}
 
@@ -1066,7 +1122,6 @@ public class TeXParser {
 			ch = parseString.charAt(pos);
 		} else {
 			Atom at = new EmptyAtom();
-			at.setCaretPosition(spos);
 			return at;
 		}
 		if (ch == L_GROUP) {
@@ -1080,11 +1135,7 @@ public class TeXParser {
 			if (this.formula.root == null) {
 				RowAtom at = new RowAtom();
 				at.add(tf.root);
-				at.setCaretPosition(spos);
 				return at;
-			}
-			if (tf.root != null) {
-				tf.root.setCaretPosition(spos);
 			}
 			return tf.root;
 		}
@@ -1095,16 +1146,10 @@ public class TeXParser {
 				insertion = false;
 				return getArgument();
 			}
-			if (at != null) {
-				at.setCaretPosition(spos);
-			}
 			return at;
 		}
 
 		Atom at = convertCharacter(ch, true);
-		if (at != null) {
-			at.setCaretPosition(spos);
-		}
 		pos++;
 		return at;
 	}
@@ -1237,7 +1282,6 @@ public class TeXParser {
 						pos++;
 					}
 					at = new JavaFontRenderingAtom(parseString.substring(start, end + 1), fontInfos);
-					at.setCaretPosition(spos);
 					return at;
 				}
 
@@ -1247,7 +1291,6 @@ public class TeXParser {
 				} else {
 					at = new ColorAtom(new RomanAtom(new TeXFormula("\\text{(Unknown char " + ((int) c) + ")}").root),
 							null, Color.RED);
-					at.setCaretPosition(spos);
 					return at;
 
 				}
@@ -1255,23 +1298,18 @@ public class TeXParser {
 				if (!ignoreWhiteSpace) {// we are in text mode
 					if (TeXFormula.symbolTextMappings[c] != null) {
 						at = SymbolAtom.get(TeXFormula.symbolTextMappings[c]).setUnicode(c);
-						at.setCaretPosition(spos);
 						return at;
 
 					}
 				}
 				if (TeXFormula.symbolFormulaMappings != null && TeXFormula.symbolFormulaMappings[c] != null) {
 					at = new TeXFormula(TeXFormula.symbolFormulaMappings[c]).root;
-					at.setCaretPosition(spos);
 					return at;
 
 				}
 
 				try {
 					at = SymbolAtom.get(symbolName);
-					if (at != null) {
-						at.setCaretPosition(pos);
-					}
 					return at;
 
 				} catch (SymbolNotFoundException e) {
@@ -1285,7 +1323,6 @@ public class TeXParser {
 			if (fontInfos != null) {
 				if (oneChar) {
 					at = new JavaFontRenderingAtom(Character.toString(c), fontInfos);
-					at.setCaretPosition(spos);
 					return at;
 				}
 				int start = pos++;
@@ -1299,13 +1336,11 @@ public class TeXParser {
 					pos++;
 				}
 				at = new JavaFontRenderingAtom(parseString.substring(start, end + 1), fontInfos);
-				at.setCaretPosition(spos);
 				return at;
 
 			}
 
 			at = new CharAtom(c, formula.textStyle, ignoreWhiteSpace);
-			at.setCaretPosition(pos);
 			return at;
 
 		}
@@ -1351,27 +1386,21 @@ public class TeXParser {
 			return new EmptyAtom();
 		}
 
+		if ("Longrightarrow".contentEquals(command)) {
+			System.out.println();
+		}
 		if (MacroInfo.Commands.get(command) != null) {
 			at = processCommands(command);
-			if (at != null) {
-				at.setCaretPosition(spos);
-			}
 			return at;
 		}
 
 		try {
 			at = TeXFormula.get(command).root;
-			if (at != null) {
-				at.setCaretPosition(spos);
-			}
 			return at;
 
 		} catch (FormulaNotFoundException e) {
 			try {
 				at = SymbolAtom.get(command);
-				if (at != null) {
-					at.setCaretPosition(spos);
-				}
 				return at;
 			} catch (SymbolNotFoundException e1) {
 			}
@@ -1382,7 +1411,6 @@ public class TeXParser {
 			throw new ParseException("Unknown symbol or command or predefined TeXFormula: '" + command + "'");
 		} else {
 			at = new ColorAtom(new RomanAtom(new TeXFormula("\\backslash " + command).root), null, Color.RED);
-			at.setCaretPosition(spos);
 			return at;
 		}
 
@@ -1534,6 +1562,12 @@ public class TeXParser {
 
 		if (atom != null) {
 			atom = atom.clone();
+			updateAtom(atom);
+			if (atom instanceof FencedAtom) {
+				FencedAtom fa = (FencedAtom) atom;
+				updateAtom(fa.getLeft());
+				updateAtom(fa.getRight());
+			}
 		}
 		return atom;
 	}

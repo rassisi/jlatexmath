@@ -86,9 +86,9 @@ public class TeXEnvironment {
 
 	public List<Box> boxes = new ArrayList<Box>();
 
-	public void clear() {
-		boxes.clear();
-	}
+	public static int caretPosition;
+
+	public static String originalParseString;
 
 	public TeXEnvironment(int style, TeXFont tf) {
 		this(style, tf, null, null);
@@ -100,6 +100,8 @@ public class TeXEnvironment {
 	}
 
 	private TeXEnvironment(int style, TeXFont tf, Color bg, Color c) {
+		boxes.clear();
+		caretPosition = 0;
 		this.style = style;
 		this.tf = tf;
 		background = bg;
@@ -109,6 +111,8 @@ public class TeXEnvironment {
 
 	private TeXEnvironment(int style, float scaleFactor, TeXFont tf, Color bg, Color c, String textStyle,
 			boolean smallCap) {
+		boxes.clear();
+		caretPosition = 0;
 		this.style = style;
 		this.scaleFactor = scaleFactor;
 		this.tf = tf;

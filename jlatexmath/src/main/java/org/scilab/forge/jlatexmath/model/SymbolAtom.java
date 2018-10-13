@@ -173,7 +173,7 @@ public class SymbolAtom extends CharSymbol {
 	 */
 	public static SymbolAtom get(String name) throws SymbolNotFoundException {
 
-		if ("prod".equals(name)) {
+		if ("Rightarrow".equals(name)) {
 			System.out.println();
 		}
 

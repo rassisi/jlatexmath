@@ -85,6 +85,8 @@ public abstract class Atom implements Cloneable {
 
 	public int alignment = -1;
 
+	public String parsString;
+
 	// Assisi
 
 	private int caretPosition = -1;
@@ -119,7 +121,7 @@ public abstract class Atom implements Cloneable {
 						Rectangle2D r = b.getScreenBox();
 						System.out.println("Hit: " + b.getClass().getSimpleName() + " (" + c + ")  at:  "
 								+ ((int) r.getMinX()) + "," + ((int) r.getMinY()) + "," + ((int) r.getWidth()) + ","
-								+ ((int) r.getHeight()));
+								+ ((int) r.getHeight()) + "    caret: " + b.getCaretPosition());
 					}
 				}
 			}
@@ -200,8 +202,13 @@ public abstract class Atom implements Cloneable {
 	}
 
 	public void setCaretPosition(int caretPosition) {
-		if (this.caretPosition == -1) {
+		if (caretPosition > TeXEnvironment.caretPosition) {
+			TeXEnvironment.caretPosition = caretPosition;
 			this.caretPosition = caretPosition;
+		} else {
+			this.caretPosition = TeXEnvironment.caretPosition;
+//			TeXEnvironment.caretPosition += caretPosition;
+//			this.caretPosition = TeXEnvironment.caretPosition;
 		}
 	}
 
@@ -215,5 +222,10 @@ public abstract class Atom implements Cloneable {
 			size = getTexEnvironment().getSize();
 		}
 		return size;
+	}
+
+	@Override
+	public String toString() {
+		return parsString;
 	}
 }

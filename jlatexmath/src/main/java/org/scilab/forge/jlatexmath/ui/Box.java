@@ -349,18 +349,12 @@ public abstract class Box {
 	}
 
 	protected void drawDebug(Graphics2D g2, float x, float y) {
-
-		// Assisi
-
 		double size = 24;
-
 		if (getAtom() != null) {
 			size = getAtom().getSize();
 		}
 		screenBox = new javafx.geometry.Rectangle2D(x * size, (y - height) * size, Math.abs(width) * size,
 				Math.abs(height + depth) * 24);
-		System.out.println(getClass().getName() + ": " + screenBox);
-
 		if (DEBUG) {
 			drawDebug(g2, x, y, true);
 		}

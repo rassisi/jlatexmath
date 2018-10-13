@@ -287,9 +287,6 @@ public class TeXIcon implements Icon {
 			box.background = Color.white;
 		}
 		// draw formula box
-
-		System.out.println("x: " + x);
-
 		box.draw(g2, (x + insets.left) / size, (y + insets.top) / size + box.getHeight());
 
 		// restore graphics settings

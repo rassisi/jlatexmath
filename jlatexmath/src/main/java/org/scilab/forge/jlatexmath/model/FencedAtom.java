@@ -175,4 +175,21 @@ public class FencedAtom extends Atom {
 
 		return hBox;
 	}
+
+	public Atom getBase() {
+		return base;
+	}
+
+	public SymbolAtom getLeft() {
+		return left;
+	}
+
+	public SymbolAtom getRight() {
+		return right;
+	}
+
+	public List<MiddleAtom> getMiddle() {
+		return middle;
+	}
+
 }
