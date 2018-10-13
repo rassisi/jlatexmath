@@ -651,6 +651,7 @@ public class TeXFormula {
 		private Float interLineSpacing;
 
 		private Color bgcolor;
+		private String originalParseString;
 
 		/**
 		 * Specify the style for rendering the given TeXFormula
@@ -787,6 +788,11 @@ public class TeXFormula {
 			return this;
 		}
 
+		public TeXIconBuilder setOriginalParseString(String originalParseString) {
+			this.originalParseString = originalParseString;
+			return this;
+		}
+
 		/**
 		 * Create a TeXIcon from the information gathered by the (chained) setXXX()
 		 * methods. (see Builder pattern)
@@ -804,8 +810,10 @@ public class TeXFormula {
 			TeXEnvironment te;
 			if (widthUnit != null) {
 				te = new TeXEnvironment(style, font, widthUnit, textWidth);
+				te.getData().originalParseString = originalParseString;
 			} else {
 				te = new TeXEnvironment(style, font);
+				te.getData().originalParseString = originalParseString;
 			}
 
 			if (interLineUnit != null) {

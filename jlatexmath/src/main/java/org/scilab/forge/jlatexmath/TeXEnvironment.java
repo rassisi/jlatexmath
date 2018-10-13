@@ -84,11 +84,13 @@ public class TeXEnvironment {
 
 	public boolean isColored = false;
 
-	public List<Box> boxes = new ArrayList<Box>();
+	public class TexEnvironmentData {
+		public List<Box> boxes = new ArrayList<Box>();
+		public int caretPosition;
+		public String originalParseString;
+	}
 
-	public static int caretPosition;
-
-	public static String originalParseString;
+	private TexEnvironmentData data;
 
 	public TeXEnvironment(int style, TeXFont tf) {
 		this(style, tf, null, null);
@@ -100,8 +102,7 @@ public class TeXEnvironment {
 	}
 
 	private TeXEnvironment(int style, TeXFont tf, Color bg, Color c) {
-		boxes.clear();
-		caretPosition = 0;
+		data = new TexEnvironmentData();
 		this.style = style;
 		this.tf = tf;
 		background = bg;
@@ -111,8 +112,7 @@ public class TeXEnvironment {
 
 	private TeXEnvironment(int style, float scaleFactor, TeXFont tf, Color bg, Color c, String textStyle,
 			boolean smallCap) {
-		boxes.clear();
-		caretPosition = 0;
+		data = new TexEnvironmentData();
 		this.style = style;
 		this.scaleFactor = scaleFactor;
 		this.tf = tf;
@@ -149,7 +149,9 @@ public class TeXEnvironment {
 	}
 
 	public TeXEnvironment copy() {
-		return new TeXEnvironment(style, scaleFactor, tf, background, color, textStyle, smallCap);
+		TeXEnvironment te = new TeXEnvironment(style, scaleFactor, tf, background, color, textStyle, smallCap);
+		te.data = data;
+		return te;
 	}
 
 	public TeXEnvironment copy(TeXFont tf) {
@@ -157,6 +159,7 @@ public class TeXEnvironment {
 		te.textwidth = textwidth;
 		te.interline = interline;
 		te.interlineUnit = interlineUnit;
+		te.data = data;
 		return te;
 	}
 
@@ -322,4 +325,9 @@ public class TeXEnvironment {
 		// if there was no last font id (whitespace boxes only), use default "mu font"
 		return (lastFontId == TeXFont.NO_FONT ? tf.getMuFontId() : lastFontId);
 	}
+
+	public TexEnvironmentData getData() {
+		return data;
+	}
+
 }

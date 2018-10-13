@@ -124,28 +124,6 @@ public class CharBox extends Box {
 
 	@Override
 	public int getCaretPosition() {
-
-//		Box parent = getParent();
-//
-////		if (parent != null) {
-////			return parent.getCaretPosition();
-////		}
-//
-//		int caret = -1;
-//
-//		while (parent != null) {
-//			if (parent.getCaretPosition() != -1) {
-//				int newcaret = parent.getCaretPosition();
-//				if (newcaret > caret) {
-//					caret = newcaret;
-//				}
-//			}
-//			parent = parent.getParent();
-//		}
-//
-//		if (caret > -1) {
-//			return caret;
-//		}
 		return super.getCaretPosition();
 	}
 

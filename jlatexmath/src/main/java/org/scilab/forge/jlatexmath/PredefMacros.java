@@ -312,6 +312,8 @@ public class PredefMacros {
 		if (num.root == null || denom.root == null) {
 			throw new ParseException("Both numerator and denominator of a fraction can't be empty!");
 		}
+		tp.updateAtom(num.root);
+		tp.updateAtom(denom.root);
 		Atom f = new FractionAtom(num.root, denom.root, true, alig, TeXConstants.ALIGN_CENTER);
 		RowAtom rat = new RowAtom();
 		rat.add(new StyleAtom(TeXConstants.STYLE_DISPLAY, f));
@@ -320,11 +322,11 @@ public class PredefMacros {
 
 	public static final Atom frac_macro(final TeXParser tp, final String[] args) throws ParseException {
 		TeXFormula num = new TeXFormula(tp, args[1], false);
-		num.root.setCaretPosition(tp.getSpos());
 		TeXFormula denom = new TeXFormula(tp, args[2], false);
-		denom.root.setCaretPosition(tp.getSpos());
 		if (num.root == null || denom.root == null)
 			throw new ParseException("Both numerator and denominator of a fraction can't be empty!");
+		tp.updateAtom(num.root, tp.getSpos() + 6);
+		tp.updateAtom(denom.root, tp.getSpos() + 9);
 		return new FractionAtom(num.root, denom.root, true);
 	}
 
@@ -333,6 +335,9 @@ public class PredefMacros {
 		TeXFormula denom = new TeXFormula(tp, args[2], false);
 		if (num.root == null || denom.root == null)
 			throw new ParseException("Both numerator and denominator of a fraction can't be empty!");
+
+		tp.updateAtom(num.root);
+		tp.updateAtom(denom.root);
 
 		double scaleX = 0.75;
 		double scaleY = 0.75;
@@ -389,6 +394,8 @@ public class PredefMacros {
 		TeXFormula denom = new TeXFormula(tp, args[6], false);
 		if (num.root == null || denom.root == null)
 			throw new ParseException("Both numerator and denominator of a fraction can't be empty!");
+		tp.updateAtom(num.root);
+		tp.updateAtom(denom.root);
 		Atom at = new FractionAtom(num.root, denom.root, rule, (int) ths[0], ths[1]);
 		RowAtom rat = new RowAtom();
 		rat.add(new StyleAtom(style * 2, new FencedAtom(at, L, R)));
@@ -401,6 +408,8 @@ public class PredefMacros {
 		Atom denom = new TeXFormula(tp, tp.getOverArgument(), false).root;
 		if (num == null || denom == null)
 			throw new ParseException("Both numerator and denominator of a fraction can't be empty!");
+		tp.updateAtom(num);
+		tp.updateAtom(denom);
 		return new FractionAtom(num, denom, true);
 	}
 

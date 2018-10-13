@@ -174,7 +174,7 @@ public abstract class Box {
 		this.background = bg;
 		this.atom = atom;
 		if (atom != null && atom.getTexEnvironment() != null) {
-			atom.getTexEnvironment().boxes.add(this);
+			atom.getTexEnvironment().getData().boxes.add(this);
 		}
 	}
 
@@ -350,8 +350,8 @@ public abstract class Box {
 
 	protected void drawDebug(Graphics2D g2, float x, float y) {
 		double size = 24;
-		if (getAtom() != null) {
-			size = getAtom().getSize();
+		if (atom != null) {
+			size = atom.getSize();
 		}
 		screenBox = new javafx.geometry.Rectangle2D(x * size, (y - height) * size, Math.abs(width) * size,
 				Math.abs(height + depth) * 24);
@@ -384,15 +384,25 @@ public abstract class Box {
 
 	public int getCaretPosition() {
 		int pos = -1;
-		if (getAtom() != null) {
+		if (atom != null) {
 
 			if (atom instanceof ScriptsAtom) {
 				pos = ((ScriptsAtom) atom).getBase().getCaretPosition();
 			} else {
-				pos = getAtom().getCaretPosition();
+				pos = atom.getCaretPosition();
 			}
-			if (pos < 0 && getParent() != null) {
-				pos = getParent().getCaretPosition();
+		}
+
+//		if (pos < 0) 
+		{
+			Box parent = getParent();
+
+			while (parent != null && parent.getAtom() != null) {
+				if (parent.getAtom().getCaretPosition() > pos) {
+					pos = parent.getAtom().getCaretPosition();
+					break;
+				}
+				parent = parent.getParent();
 			}
 		}
 		return pos;

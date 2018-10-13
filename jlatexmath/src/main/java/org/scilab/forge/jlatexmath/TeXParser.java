@@ -188,10 +188,12 @@ public class TeXParser {
 	 * @throws ParseException if the string could not be parsed correctly
 	 */
 	public TeXParser(boolean isPartial, String parseString, TeXFormula formula, boolean firstpass) {
-
-		if (TeXEnvironment.originalParseString.length() != parseString.length()) {
-			TeXEnvironment.caretPosition = TeXEnvironment.originalParseString.indexOf(parseString,
-					TeXEnvironment.caretPosition);
+		if (formula.getRoot() != null) {
+			TeXEnvironment te = formula.getRoot().getTexEnvironment();
+			if (te != null && te.getData().originalParseString.length() != parseString.length()) {
+				te.getData().caretPosition = te.getData().originalParseString.indexOf(parseString,
+						te.getData().caretPosition);
+			}
 		}
 		this.formula = formula;
 		this.isPartial = isPartial;
@@ -202,11 +204,14 @@ public class TeXParser {
 			if (firstpass) {
 				firstpass();
 			}
-		} else {
-			this.parseString = null;
-			this.pos = 0;
-			this.len = 0;
 		}
+
+//		else {
+//			this.parseString = null;
+//			this.pos = 0;
+//			this.len = 0;
+//		}
+
 	}
 
 	/**
@@ -889,12 +894,16 @@ public class TeXParser {
 		}
 	}
 
-	private void updateAtom(Atom at) {
+	public void updateAtom(Atom at) {
+		updateAtom(at, startPos);
+	}
+
+	public void updateAtom(Atom at, int pos) {
 		if (at != null) {
-			at.setCaretPosition(startPos);
+			at.setCaretPosition(pos);
 			try {
-				int end = Math.min(parseString.length(), startPos + 20);
-				at.parsString = parseString.substring(startPos, end);
+				int end = Math.min(parseString.length(), pos + 1000);
+				at.parsString = parseString.substring(pos, end);
 			} catch (Exception ex) {
 				System.out.println();
 			}
@@ -1562,6 +1571,11 @@ public class TeXParser {
 
 		if (atom != null) {
 			atom = atom.clone();
+//			if (formula != null && formula.root != null) {
+//				atom.setTexEnvironment(formula.root.getTexEnvironment());
+//			} else {
+////				System.err.println("TeXParser.processCommand(): Should not happen!");
+//			}
 			updateAtom(atom);
 			if (atom instanceof FencedAtom) {
 				FencedAtom fa = (FencedAtom) atom;
@@ -1679,6 +1693,10 @@ public class TeXParser {
 
 	public int getSpos() {
 		return spos;
+	}
+
+	public int getStartPos() {
+		return startPos;
 	}
 
 }

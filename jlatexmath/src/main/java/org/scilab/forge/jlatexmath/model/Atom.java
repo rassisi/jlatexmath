@@ -91,6 +91,8 @@ public abstract class Atom implements Cloneable {
 
 	private int caretPosition = -1;
 
+	private Box box;
+
 	public Atom() {
 	}
 
@@ -105,14 +107,14 @@ public abstract class Atom implements Cloneable {
 	 */
 	public Box createBox(TeXEnvironment env) {
 		this.texEnvironment = env;
-		Box box = doCreateBox(env);
+		box = doCreateBox(env);
 		box.setAtom(this);
 		return box;
 	}
 
 	public static Box findCaretBox(TeXEnvironment texEnvironment, double x, double y) {
 		List<Box> hitBoxes = new ArrayList<Box>();
-		for (Box b : texEnvironment.boxes) {
+		for (Box b : texEnvironment.getData().boxes) {
 			if (b instanceof CharBox) {
 				if (b.getScreenBox() != null) {
 					if (b.getScreenBox().contains(x, y)) {
@@ -202,13 +204,15 @@ public abstract class Atom implements Cloneable {
 	}
 
 	public void setCaretPosition(int caretPosition) {
-		if (caretPosition > TeXEnvironment.caretPosition) {
-			TeXEnvironment.caretPosition = caretPosition;
-			this.caretPosition = caretPosition;
+		if (getTexEnvironment() != null) {
+			if (caretPosition > getTexEnvironment().getData().caretPosition) {
+				getTexEnvironment().getData().caretPosition = caretPosition;
+				this.caretPosition = caretPosition;
+			} else {
+				this.caretPosition = getTexEnvironment().getData().caretPosition;
+			}
 		} else {
-			this.caretPosition = TeXEnvironment.caretPosition;
-//			TeXEnvironment.caretPosition += caretPosition;
-//			this.caretPosition = TeXEnvironment.caretPosition;
+			this.caretPosition = caretPosition;
 		}
 	}
 
@@ -228,4 +232,13 @@ public abstract class Atom implements Cloneable {
 	public String toString() {
 		return parsString;
 	}
+
+	public Box getBox() {
+		return box;
+	}
+
+	public void setTexEnvironment(TeXEnvironment texEnvironment) {
+		this.texEnvironment = texEnvironment;
+	}
+
 }
