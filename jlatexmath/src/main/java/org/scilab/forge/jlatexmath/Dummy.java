@@ -68,6 +68,8 @@ public class Dummy {
 
 	private int type = -1;
 
+	private LatexPane latexPane;
+
 	/**
 	 * Creates a new Dummy for the given atom.
 	 *
@@ -75,6 +77,7 @@ public class Dummy {
 	 */
 	public Dummy(Atom a) {
 		el = a;
+		latexPane = LatexPane.INSTANCE;
 	}
 
 	/**
@@ -141,9 +144,7 @@ public class Dummy {
 		if (textSymbol)
 			((CharSymbol) el).markAsTextSymbol();
 		Box b = el.createBox(rs);
-		if (el != null) {
-			el.getTexEnvironment().getData().boxes.add(b);
-		}
+		latexPane.getBoxes().add(b);
 		if (textSymbol)
 			((CharSymbol) el).removeMark(); // atom remains unchanged!
 		return b;

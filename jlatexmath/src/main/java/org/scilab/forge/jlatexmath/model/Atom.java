@@ -51,6 +51,7 @@ package org.scilab.forge.jlatexmath.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.scilab.forge.jlatexmath.LatexPane;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXEnvironment;
 import org.scilab.forge.jlatexmath.ui.Box;
@@ -93,10 +94,11 @@ public abstract class Atom implements Cloneable {
 
 	private Box box;
 
-	public Atom() {
-	}
+	private LatexPane latexPane;
 
-	private TeXEnvironment texEnvironment;
+	public Atom() {
+		latexPane = LatexPane.INSTANCE;
+	}
 
 	/**
 	 * Convert this atom into a {@link Box}, using properties set by "parent" atoms,
@@ -106,15 +108,14 @@ public abstract class Atom implements Cloneable {
 	 * @return the resulting box.
 	 */
 	public Box createBox(TeXEnvironment env) {
-		this.texEnvironment = env;
 		box = doCreateBox(env);
 		box.setAtom(this);
 		return box;
 	}
 
-	public static Box findCaretBox(TeXEnvironment texEnvironment, double x, double y) {
+	public static Box findCaretBox(LatexPane latexPane, double x, double y) {
 		List<Box> hitBoxes = new ArrayList<Box>();
-		for (Box b : texEnvironment.getData().boxes) {
+		for (Box b : latexPane.getBoxes()) {
 			if (b instanceof CharBox) {
 				if (b.getScreenBox() != null) {
 					if (b.getScreenBox().contains(x, y)) {
@@ -204,28 +205,12 @@ public abstract class Atom implements Cloneable {
 	}
 
 	public void setCaretPosition(int caretPosition) {
-		if (getTexEnvironment() != null) {
-			if (caretPosition > getTexEnvironment().getData().caretPosition) {
-				getTexEnvironment().getData().caretPosition = caretPosition;
-				this.caretPosition = caretPosition;
-			} else {
-				this.caretPosition = getTexEnvironment().getData().caretPosition;
-			}
-		} else {
+		if (caretPosition > latexPane.getCaretPosition()) {
+			latexPane.setCaretPosition(caretPosition);
 			this.caretPosition = caretPosition;
+		} else {
+			this.caretPosition = latexPane.getCaretPosition();
 		}
-	}
-
-	public TeXEnvironment getTexEnvironment() {
-		return texEnvironment;
-	}
-
-	public double getSize() {
-		double size = 24;
-		if (getTexEnvironment() != null) {
-			size = getTexEnvironment().getSize();
-		}
-		return size;
 	}
 
 	@Override
@@ -235,10 +220,6 @@ public abstract class Atom implements Cloneable {
 
 	public Box getBox() {
 		return box;
-	}
-
-	public void setTexEnvironment(TeXEnvironment texEnvironment) {
-		this.texEnvironment = texEnvironment;
 	}
 
 }

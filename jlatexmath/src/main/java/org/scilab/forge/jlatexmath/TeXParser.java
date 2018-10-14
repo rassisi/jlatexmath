@@ -153,6 +153,8 @@ public class TeXParser {
 		unparsedContents.add("jlmExternalFont");
 	}
 
+	private LatexPane latexPane;
+
 	/**
 	 * Create a new TeXParser
 	 *
@@ -188,16 +190,17 @@ public class TeXParser {
 	 * @throws ParseException if the string could not be parsed correctly
 	 */
 	public TeXParser(boolean isPartial, String parseString, TeXFormula formula, boolean firstpass) {
-		if (formula.getRoot() != null) {
-			TeXEnvironment te = formula.getRoot().getTexEnvironment();
-			if (te != null && te.getData().originalParseString.length() != parseString.length()) {
-				te.getData().caretPosition = te.getData().originalParseString.indexOf(parseString,
-						te.getData().caretPosition);
-			}
+
+		this.latexPane = LatexPane.INSTANCE;
+		if (latexPane.getOriginalParseString().length() != parseString.length()) {
+			latexPane.setCaretPosition(
+					latexPane.getOriginalParseString().indexOf(parseString, latexPane.getCaretPosition()));
 		}
 		this.formula = formula;
 		this.isPartial = isPartial;
-		if (parseString != null) {
+		if (parseString != null)
+
+		{
 			this.parseString = new StringBuffer(parseString);
 			this.len = parseString.length();
 			this.pos = 0;
@@ -1571,11 +1574,6 @@ public class TeXParser {
 
 		if (atom != null) {
 			atom = atom.clone();
-//			if (formula != null && formula.root != null) {
-//				atom.setTexEnvironment(formula.root.getTexEnvironment());
-//			} else {
-////				System.err.println("TeXParser.processCommand(): Should not happen!");
-//			}
 			updateAtom(atom);
 			if (atom instanceof FencedAtom) {
 				FencedAtom fa = (FencedAtom) atom;

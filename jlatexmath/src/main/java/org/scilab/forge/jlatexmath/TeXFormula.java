@@ -142,6 +142,8 @@ public class TeXFormula {
 	public Map<String, String> jlmXMLMap;
 	private TeXParser parser;
 
+	private LatexPane latexPane;
+
 	static {
 		// character-to-symbol and character-to-delimiter mappings
 		TeXFormulaSettingsParser parser = new TeXFormulaSettingsParser();
@@ -241,6 +243,7 @@ public class TeXFormula {
 	 *
 	 */
 	public TeXFormula() {
+		this.latexPane = LatexPane.INSTANCE;
 		parser = new TeXParser("", this, false);
 	}
 
@@ -252,6 +255,7 @@ public class TeXFormula {
 	 * @throws ParseException if the string could not be parsed correctly
 	 */
 	public TeXFormula(String s, Map<String, String> map) throws ParseException {
+		this.latexPane = LatexPane.INSTANCE;
 		this.jlmXMLMap = map;
 		parser = new TeXParser(s, this);
 		parser.parse();
@@ -279,12 +283,14 @@ public class TeXFormula {
 	 * Used when a text style command was found in the parse string.
 	 */
 	public TeXFormula(String s, String textStyle) throws ParseException {
+		this.latexPane = LatexPane.INSTANCE;
 		this.textStyle = textStyle;
 		parser = new TeXParser(s, this);
 		parser.parse();
 	}
 
 	public TeXFormula(String s, String textStyle, boolean firstpass, boolean space) throws ParseException {
+		this.latexPane = LatexPane.INSTANCE;
 		this.textStyle = textStyle;
 		parser = new TeXParser(s, this, firstpass, space);
 		parser.parse();
@@ -298,6 +304,7 @@ public class TeXFormula {
 	 * @param f the formula to be copied
 	 */
 	public TeXFormula(TeXFormula f) {
+		this.latexPane = LatexPane.INSTANCE;
 		if (f != null) {
 			addImpl(f);
 		}
@@ -308,6 +315,7 @@ public class TeXFormula {
 	 *
 	 */
 	protected TeXFormula(TeXParser tp) {
+		this.latexPane = LatexPane.INSTANCE;
 		this.jlmXMLMap = tp.formula.jlmXMLMap;
 		parser = new TeXParser(tp.getIsPartial(), "", this, false);
 	}
@@ -324,6 +332,7 @@ public class TeXFormula {
 	}
 
 	public TeXFormula(TeXParser tp, String s, boolean firstpass) throws ParseException {
+		this.latexPane = LatexPane.INSTANCE;
 		this.textStyle = null;
 		this.jlmXMLMap = tp.formula.jlmXMLMap;
 		boolean isPartial = tp.getIsPartial();
@@ -343,6 +352,7 @@ public class TeXFormula {
 	 * Used when a text style command was found in the parse string.
 	 */
 	protected TeXFormula(TeXParser tp, String s, String textStyle) throws ParseException {
+		this.latexPane = LatexPane.INSTANCE;
 		this.textStyle = textStyle;
 		this.jlmXMLMap = tp.formula.jlmXMLMap;
 		boolean isPartial = tp.getIsPartial();
@@ -362,6 +372,7 @@ public class TeXFormula {
 
 	public TeXFormula(TeXParser tp, String s, String textStyle, boolean firstpass, boolean space)
 			throws ParseException {
+		this.latexPane = LatexPane.INSTANCE;
 		this.textStyle = textStyle;
 		this.jlmXMLMap = tp.formula.jlmXMLMap;
 		boolean isPartial = tp.getIsPartial();
@@ -651,7 +662,6 @@ public class TeXFormula {
 		private Float interLineSpacing;
 
 		private Color bgcolor;
-		private String originalParseString;
 
 		/**
 		 * Specify the style for rendering the given TeXFormula
@@ -788,11 +798,6 @@ public class TeXFormula {
 			return this;
 		}
 
-		public TeXIconBuilder setOriginalParseString(String originalParseString) {
-			this.originalParseString = originalParseString;
-			return this;
-		}
-
 		/**
 		 * Create a TeXIcon from the information gathered by the (chained) setXXX()
 		 * methods. (see Builder pattern)
@@ -810,10 +815,8 @@ public class TeXFormula {
 			TeXEnvironment te;
 			if (widthUnit != null) {
 				te = new TeXEnvironment(style, font, widthUnit, textWidth);
-				te.getData().originalParseString = originalParseString;
 			} else {
 				te = new TeXEnvironment(style, font);
-				te.getData().originalParseString = originalParseString;
 			}
 
 			if (interLineUnit != null) {

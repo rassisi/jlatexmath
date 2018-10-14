@@ -55,6 +55,7 @@ import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 
+import org.scilab.forge.jlatexmath.LatexPane;
 import org.scilab.forge.jlatexmath.model.Atom;
 import org.scilab.forge.jlatexmath.model.ScriptsAtom;
 
@@ -123,6 +124,8 @@ public abstract class Box {
 
 	private Atom atom;
 
+	private LatexPane latexPane;
+
 	/**
 	 * List of child boxes
 	 */
@@ -170,12 +173,11 @@ public abstract class Box {
 	 * @param bg the background color
 	 */
 	protected Box(Atom atom, Color fg, Color bg) {
+		this.latexPane = LatexPane.INSTANCE;
+		this.latexPane.getBoxes().add(this);
 		this.foreground = fg;
 		this.background = bg;
 		this.atom = atom;
-		if (atom != null && atom.getTexEnvironment() != null) {
-			atom.getTexEnvironment().getData().boxes.add(this);
-		}
 	}
 
 	public void setParent(Box parent) {
@@ -349,10 +351,7 @@ public abstract class Box {
 	}
 
 	protected void drawDebug(Graphics2D g2, float x, float y) {
-		double size = 24;
-		if (atom != null) {
-			size = atom.getSize();
-		}
+		double size = latexPane.getSize();
 		screenBox = new javafx.geometry.Rectangle2D(x * size, (y - height) * size, Math.abs(width) * size,
 				Math.abs(height + depth) * 24);
 		if (DEBUG) {
