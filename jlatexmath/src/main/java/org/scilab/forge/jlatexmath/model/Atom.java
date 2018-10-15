@@ -192,9 +192,12 @@ public abstract class Atom implements Cloneable {
 		return type;
 	}
 
+	@Override
 	public Atom clone() {
 		try {
-			return (Atom) super.clone();
+			Atom atom = (Atom) super.clone();
+			atom.latexPane = LatexPane.INSTANCE;
+			return atom;
 		} catch (Exception e) {
 			return null;
 		}

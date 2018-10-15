@@ -393,17 +393,17 @@ public abstract class Box {
 		}
 
 //		if (pos < 0) 
-		{
-			Box parent = getParent();
-
-			while (parent != null && parent.getAtom() != null) {
-				if (parent.getAtom().getCaretPosition() > pos) {
-					pos = parent.getAtom().getCaretPosition();
-					break;
-				}
-				parent = parent.getParent();
-			}
-		}
+//		{
+//			Box parent = getParent();
+//
+//			while (parent != null && parent.getAtom() != null) {
+//				if (parent.getAtom().getCaretPosition() > pos) {
+//					pos = parent.getAtom().getCaretPosition();
+//					break;
+//				}
+//				parent = parent.getParent();
+//			}
+//		}
 		return pos;
 	}
 
@@ -412,6 +412,7 @@ public abstract class Box {
 	}
 
 	// Assisi
+	@Override
 	public String toString() {
 		return "screenBox: " + getScreenBox() + "  caretPosition: " + getCaretPosition(); // super.toString() + "=" + //
 																							// cf.c;

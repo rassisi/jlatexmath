@@ -907,6 +907,11 @@ public class TeXParser {
 			try {
 				int end = Math.min(parseString.length(), pos + 1000);
 				at.parsString = parseString.substring(pos, end);
+
+				if (at.parsString.startsWith("L = ")) {
+					System.out.println();
+				}
+
 			} catch (Exception ex) {
 				System.out.println();
 			}

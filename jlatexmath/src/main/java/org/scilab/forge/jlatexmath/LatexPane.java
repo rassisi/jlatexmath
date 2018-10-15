@@ -50,6 +50,7 @@ public class LatexPane {
 		this.fgColor = fgColor;
 		this.size = size;
 		this.boxes = new ArrayList<Box>();
+		this.caretPosition = -1;
 	}
 
 	public void build() {
@@ -62,8 +63,7 @@ public class LatexPane {
 		mathLabel.setBackground(Color.white);
 	}
 
-	public static LatexPane createInstance(String text, double width, double size, Color bgColor,
-			Color fgColor) {
+	public static LatexPane createInstance(String text, double width, double size, Color bgColor, Color fgColor) {
 		LatexPane data = new LatexPane(text, width, size, bgColor, fgColor);
 		INSTANCE = data;
 		INSTANCE.build();
