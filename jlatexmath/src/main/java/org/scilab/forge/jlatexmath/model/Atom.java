@@ -124,7 +124,8 @@ public abstract class Atom implements Cloneable {
 						Rectangle2D r = b.getScreenBox();
 						System.out.println("Hit: " + b.getClass().getSimpleName() + " (" + c + ")  at:  "
 								+ ((int) r.getMinX()) + "," + ((int) r.getMinY()) + "," + ((int) r.getWidth()) + ","
-								+ ((int) r.getHeight()) + "    caret: " + b.getCaretPosition());
+								+ ((int) r.getHeight()) + "    caret: " + b.getCaretPosition() + "  parse: "
+								+ b.getAtom().getParsString());
 					}
 				}
 			}
@@ -208,12 +209,7 @@ public abstract class Atom implements Cloneable {
 	}
 
 	public void setCaretPosition(int caretPosition) {
-		if (caretPosition > latexPane.getCaretPosition()) {
-			latexPane.setCaretPosition(caretPosition);
-			this.caretPosition = caretPosition;
-		} else {
-			this.caretPosition = latexPane.getCaretPosition();
-		}
+		this.caretPosition = latexPane.getCaretPosition();
 	}
 
 	@Override
@@ -225,4 +221,14 @@ public abstract class Atom implements Cloneable {
 		return box;
 	}
 
+	public String getParsString() {
+		return maxString(parsString, 10);
+	}
+
+	public static String maxString(String s, int max) {
+		if (s == null) {
+			return null;
+		}
+		return s.substring(0, Math.min(s.length(), max));
+	}
 }

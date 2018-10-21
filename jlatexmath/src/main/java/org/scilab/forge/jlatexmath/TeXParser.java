@@ -88,6 +88,11 @@ public class TeXParser {
 	private boolean arrayMode;
 	private boolean ignoreWhiteSpace = true;
 	private boolean isPartial;
+	private boolean isFirstPass;
+
+	private int startPos;
+
+	private int macroCorr;
 
 	// the escape character
 	private static final char ESCAPE = '\\';
@@ -192,15 +197,21 @@ public class TeXParser {
 	public TeXParser(boolean isPartial, String parseString, TeXFormula formula, boolean firstpass) {
 
 		this.latexPane = LatexPane.INSTANCE;
-		if (latexPane.getOriginalParseString().length() != parseString.length()) {
-			latexPane.setCaretPosition(
-					latexPane.getOriginalParseString().indexOf(parseString, latexPane.getCaretPosition()));
-		}
 		this.formula = formula;
 		this.isPartial = isPartial;
+		this.isFirstPass = firstpass;
+		this.latexPane.addParser(this);
+
+		System.out.println("*** Textparser: " + parseString);
+		System.out.println();
+		System.out.println("                 isPartial: " + isPartial + "   isFirst: " + isFirstPass);
+		System.out.println("                 formula: " + formula);
 		if (parseString != null)
 
 		{
+
+			System.out.println();
+
 			this.parseString = new StringBuffer(parseString);
 			this.len = parseString.length();
 			this.pos = 0;
@@ -493,7 +504,9 @@ public class TeXParser {
 						args = getOptsArgs(mac.nbArgs, mac.hasOptions ? 1 : 0);
 						args[0] = com;
 						try {
-							parseString.replace(spos, pos, (String) mac.invoke(this, args));
+							String macro = (String) mac.invoke(this, args);
+							macroCorr = (pos - spos) - macro.length();
+							parseString.replace(spos, pos, macro);
 						} catch (ParseException e) {
 							if (!isPartial) {
 								throw e;
@@ -520,6 +533,8 @@ public class TeXParser {
 									expr += "{" + optarg[i] + "}";
 								expr += "{" + grp + "}\\makeatother}";
 								parseString.replace(spos, pos, expr);
+								macroCorr = 9;
+								// 29
 								len = parseString.length();
 								pos = spos;
 							} catch (ParseException e) {
@@ -548,17 +563,23 @@ public class TeXParser {
 					if (pos < len) {
 						pos--;
 					}
-					parseString.replace(spos, pos, "");
+					String macro = "";
+					macroCorr = (pos - spos);
+					parseString.replace(spos, pos, macro);
 					len = parseString.length();
 					pos = spos;
 					break;
 				case DEGRE:
-					parseString.replace(pos, pos + 1, "^{\\circ}");
+					macro = "^{\\circ}";
+					macroCorr = 1 + macro.length();
+					parseString.replace(pos, pos + 1, macro);
 					len = parseString.length();
 					pos++;
 					break;
 				case SUPTWO:
-					parseString.replace(pos, pos + 1, "\\jlatexmathcumsup{2}");
+					macro = "\\jlatexmathcumsup{2}";
+					macroCorr = 1 + macro.length();
+					parseString.replace(pos, pos + 1, macro);
 					len = parseString.length();
 					pos++;
 					break;
@@ -721,7 +742,9 @@ public class TeXParser {
 		}
 	}
 
-	private int startPos;
+	public int getMacroCorr() {
+		return macroCorr;
+	}
 
 	/**
 	 * Parse the input string
@@ -895,23 +918,20 @@ public class TeXParser {
 		if (formula.root == null && !arrayMode) {
 			formula.add(new EmptyAtom());
 		}
+
+		latexPane.removeParser();
 	}
 
 	public void updateAtom(Atom at) {
-		updateAtom(at, startPos);
+		updateAtom(at, latexPane.getCaretPosition());
 	}
 
 	public void updateAtom(Atom at, int pos) {
 		if (at != null) {
 			at.setCaretPosition(pos);
 			try {
-				int end = Math.min(parseString.length(), pos + 1000);
+				int end = Math.min(parseString.length(), pos + 100);
 				at.parsString = parseString.substring(pos, end);
-
-				if (at.parsString.startsWith("L = ")) {
-					System.out.println();
-				}
-
 			} catch (Exception ex) {
 				System.out.println();
 			}
@@ -1692,6 +1712,10 @@ public class TeXParser {
 		}
 
 		return c;
+	}
+
+	public LatexPane getLatexPane() {
+		return latexPane;
 	}
 
 	public int getSpos() {

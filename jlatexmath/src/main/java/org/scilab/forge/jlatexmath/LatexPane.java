@@ -31,8 +31,6 @@ public class LatexPane {
 
 	private final List<Box> boxes;;
 
-	private int caretPosition;
-
 	private final String originalParseString;
 
 	private final double width;
@@ -43,6 +41,10 @@ public class LatexPane {
 
 	private final double size;
 
+	private List<TeXParser> parserStack = new ArrayList<TeXParser>();
+
+//	private int parserStackPointer = -1;
+
 	public LatexPane(String originalParseString, double width, double size, Color bgColor, Color fgColor) {
 		this.originalParseString = originalParseString;
 		this.width = width;
@@ -50,7 +52,6 @@ public class LatexPane {
 		this.fgColor = fgColor;
 		this.size = size;
 		this.boxes = new ArrayList<Box>();
-		this.caretPosition = -1;
 	}
 
 	public void build() {
@@ -79,11 +80,17 @@ public class LatexPane {
 	}
 
 	public int getCaretPosition() {
-		return caretPosition;
-	}
 
-	public void setCaretPosition(int caretPosition) {
-		this.caretPosition = caretPosition;
+		int caret = 0;
+
+//		for (int i = 0; i < parserStackPointer; i++) {
+//			caret += parserStack.get(i).getStartPos();
+//		}
+
+		for (TeXParser parser : parserStack) {
+			caret += parser.getStartPos() + parser.getMacroCorr();
+		}
+		return caret;
 	}
 
 	public String getOriginalParseString() {
@@ -106,4 +113,13 @@ public class LatexPane {
 		return size;
 	}
 
+	public void addParser(TeXParser parser) {
+		parserStack.add(parser);
+	}
+
+	public void removeParser() {
+		if (!parserStack.isEmpty()) {
+			parserStack.remove(parserStack.size() - 1);
+		}
+	}
 }

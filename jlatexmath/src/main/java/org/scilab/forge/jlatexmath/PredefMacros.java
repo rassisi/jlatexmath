@@ -325,8 +325,8 @@ public class PredefMacros {
 		TeXFormula denom = new TeXFormula(tp, args[2], false);
 		if (num.root == null || denom.root == null)
 			throw new ParseException("Both numerator and denominator of a fraction can't be empty!");
-		tp.updateAtom(num.root, tp.getSpos() + 6);
-		tp.updateAtom(denom.root, tp.getSpos() + 9);
+		tp.updateAtom(num.root, tp.getLatexPane().getCaretPosition() + 6);
+		tp.updateAtom(denom.root, tp.getLatexPane().getCaretPosition() + 9);
 		return new FractionAtom(num.root, denom.root, true);
 	}
 
