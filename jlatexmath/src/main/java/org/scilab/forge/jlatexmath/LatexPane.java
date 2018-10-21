@@ -43,10 +43,13 @@ public class LatexPane {
 
 	private List<TeXParser> parserStack = new ArrayList<TeXParser>();
 
-//	private int parserStackPointer = -1;
+	public int[] caretTranslation = new int[1000000];
 
 	public LatexPane(String originalParseString, double width, double size, Color bgColor, Color fgColor) {
 		this.originalParseString = originalParseString;
+		for (int i = 0; i < originalParseString.length(); i++) {
+			caretTranslation[i] = i;
+		}
 		this.width = width;
 		this.bgColor = bgColor;
 		this.fgColor = fgColor;
@@ -80,15 +83,9 @@ public class LatexPane {
 	}
 
 	public int getCaretPosition() {
-
 		int caret = 0;
-
-//		for (int i = 0; i < parserStackPointer; i++) {
-//			caret += parserStack.get(i).getStartPos();
-//		}
-
 		for (TeXParser parser : parserStack) {
-			caret += parser.getStartPos() + parser.getMacroCorr();
+			caret = caretTranslation[parser.getStartPos()]; // Spos()];
 		}
 		return caret;
 	}

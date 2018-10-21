@@ -61,6 +61,7 @@ import org.scilab.forge.jlatexmath.model.HlineAtom;
 import org.scilab.forge.jlatexmath.model.JavaFontRenderingAtom;
 import org.scilab.forge.jlatexmath.model.MacroInfo;
 import org.scilab.forge.jlatexmath.model.MathAtom;
+import org.scilab.forge.jlatexmath.model.NewLineAtom;
 import org.scilab.forge.jlatexmath.model.PhantomAtom;
 import org.scilab.forge.jlatexmath.model.RomanAtom;
 import org.scilab.forge.jlatexmath.model.RowAtom;
@@ -68,6 +69,7 @@ import org.scilab.forge.jlatexmath.model.ScriptsAtom;
 import org.scilab.forge.jlatexmath.model.SpaceAtom;
 import org.scilab.forge.jlatexmath.model.SymbolAtom;
 import org.scilab.forge.jlatexmath.model.UnderscoreAtom;
+import org.scilab.forge.jlatexmath.ui.NewLineBox;
 
 /**
  * This class implements a parser for LaTeX' formulas.
@@ -91,8 +93,6 @@ public class TeXParser {
 	private boolean isFirstPass;
 
 	private int startPos;
-
-	private int macroCorr;
 
 	// the escape character
 	private static final char ESCAPE = '\\';
@@ -202,16 +202,13 @@ public class TeXParser {
 		this.isFirstPass = firstpass;
 		this.latexPane.addParser(this);
 
-		System.out.println("*** Textparser: " + parseString);
-		System.out.println();
-		System.out.println("                 isPartial: " + isPartial + "   isFirst: " + isFirstPass);
-		System.out.println("                 formula: " + formula);
+//		System.out.println("*** Textparser: " + parseString);
+//		System.out.println();
+//		System.out.println("                 isPartial: " + isPartial + "   isFirst: " + isFirstPass);
+//		System.out.println("                 formula: " + formula);
 		if (parseString != null)
 
 		{
-
-			System.out.println();
-
 			this.parseString = new StringBuffer(parseString);
 			this.len = parseString.length();
 			this.pos = 0;
@@ -505,7 +502,7 @@ public class TeXParser {
 						args[0] = com;
 						try {
 							String macro = (String) mac.invoke(this, args);
-							macroCorr = (pos - spos) - macro.length();
+							updatecaretTranslation(spos, pos, macro);
 							parseString.replace(spos, pos, macro);
 						} catch (ParseException e) {
 							if (!isPartial) {
@@ -532,8 +529,8 @@ public class TeXParser {
 								for (int i = 1; i <= mac.nbArgs - 1; i++)
 									expr += "{" + optarg[i] + "}";
 								expr += "{" + grp + "}\\makeatother}";
+								updatecaretTranslation(spos, pos, expr);
 								parseString.replace(spos, pos, expr);
-								macroCorr = 9;
 								// 29
 								len = parseString.length();
 								pos = spos;
@@ -564,21 +561,21 @@ public class TeXParser {
 						pos--;
 					}
 					String macro = "";
-					macroCorr = (pos - spos);
+					updatecaretTranslation(spos, pos, macro);
 					parseString.replace(spos, pos, macro);
 					len = parseString.length();
 					pos = spos;
 					break;
 				case DEGRE:
 					macro = "^{\\circ}";
-					macroCorr = 1 + macro.length();
+					updatecaretTranslation(pos, pos + 1, macro);
 					parseString.replace(pos, pos + 1, macro);
 					len = parseString.length();
 					pos++;
 					break;
 				case SUPTWO:
 					macro = "\\jlatexmathcumsup{2}";
-					macroCorr = 1 + macro.length();
+					updatecaretTranslation(pos, pos + 1, macro);
 					parseString.replace(pos, pos + 1, macro);
 					len = parseString.length();
 					pos++;
@@ -742,8 +739,16 @@ public class TeXParser {
 		}
 	}
 
-	public int getMacroCorr() {
-		return macroCorr;
+	private void updatecaretTranslation(int start, int end, String macro) {
+		int l1 = end - start;
+		int l2 = macro.length();
+		int diff = l2 - l1;
+		int[] temp = new int[1000000];
+		System.arraycopy(latexPane.caretTranslation, 0, temp, 0, 1000000);
+
+		for (int i = end; i < 1000000; i++) {
+			latexPane.caretTranslation[i] += diff;
+		}
 	}
 
 	/**
@@ -1417,6 +1422,8 @@ public class TeXParser {
 		spos = pos;
 		Atom at;
 
+		System.out.println("firstpass = " + isFirstPass + "  spos = " + spos + "  startPos = " + startPos);
+
 		String command = getCommand();
 
 		if (command.length() == 0) {
@@ -1428,6 +1435,13 @@ public class TeXParser {
 		}
 		if (MacroInfo.Commands.get(command) != null) {
 			at = processCommands(command);
+
+			if (at == null && "\\".equals(command)) {
+				Atom atom = new NewLineAtom();
+				new NewLineBox(atom);
+				updateAtom(atom);
+			}
+
 			return at;
 		}
 
