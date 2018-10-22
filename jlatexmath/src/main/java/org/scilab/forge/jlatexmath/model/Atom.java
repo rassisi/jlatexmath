@@ -48,17 +48,10 @@
 
 package org.scilab.forge.jlatexmath.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.scilab.forge.jlatexmath.LatexPane;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXEnvironment;
 import org.scilab.forge.jlatexmath.ui.Box;
-import org.scilab.forge.jlatexmath.ui.CharBox;
-import org.scilab.forge.jlatexmath.ui.NewLineBox;
-
-import javafx.geometry.Rectangle2D;
 
 /**
  * An abstract superclass for all logical mathematical constructions that can be
@@ -87,7 +80,7 @@ public abstract class Atom implements Cloneable {
 
 	public int alignment = -1;
 
-	public String parsString;
+	public String parseString;
 
 	// Assisi
 
@@ -116,51 +109,51 @@ public abstract class Atom implements Cloneable {
 		return box;
 	}
 
-	public static Box findCaretBox(LatexPane latexPane, double x, double y) {
-		List<Box> hitBoxes = new ArrayList<Box>();
-		for (Box b : latexPane.getBoxes()) {
-			if (b instanceof CharBox || b instanceof NewLineBox) {
-				if (b.getScreenBox() != null) {
-					if (b.getAtom() != null && b.getScreenBox().contains(x, y)) {
-						String c = getBoxContentDisplay(b.getAtom());
-						hitBoxes.add(b);
-						Rectangle2D r = b.getScreenBox();
-						System.out.println("Hit: " + b.getClass().getSimpleName() + " (" + c + ")  at:  "
-								+ ((int) r.getMinX()) + "," + ((int) r.getMinY()) + "," + ((int) r.getWidth()) + ","
-								+ ((int) r.getHeight()) + "    caret: " + b.getCaretPosition() + "  parse: "
-								+ b.getAtom().getParsString());
-					}
-				}
-			}
-		}
+//	public static Box findCaretBox(LatexPane latexPane, double x, double y) {
+//		List<Box> hitBoxes = new ArrayList<Box>();
+//		for (Box b : latexPane.getBoxes()) {
+//			if (b instanceof CharBox || b instanceof NewLineBox) {
+//				if (b.getScreenBox() != null) {
+//					if (b.getAtom() != null && b.getScreenBox().contains(x, y)) {
+//						String c = getBoxContentDisplay(b.getAtom());
+//						hitBoxes.add(b);
+//						Rectangle2D r = b.getScreenBox();
+//						System.out.println("Hit: " + b.getClass().getSimpleName() + " (" + c + ")  at:  "
+//								+ ((int) r.getMinX()) + "," + ((int) r.getMinY()) + "," + ((int) r.getWidth()) + ","
+//								+ ((int) r.getHeight()) + "    caret: " + b.getCaretPosition() + "  parse: "
+//								+ b.getAtom().getParsString());
+//					}
+//				}
+//			}
+//		}
+//
+//		if (!hitBoxes.isEmpty()) {
+//			return hitBoxes.get(hitBoxes.size() - 1);
+//		}
+//
+//		return null;
+//	}
 
-		if (!hitBoxes.isEmpty()) {
-			return hitBoxes.get(hitBoxes.size() - 1);
-		}
-
-		return null;
-	}
-
-	private static String getBoxContentDisplay(Atom a) {
+	public String getBoxContentDisplay() {
 		String c = " ";
-		if (a instanceof CharAtom) {
-			char cc = ((CharAtom) a).getC();
+		if (this instanceof CharAtom) {
+			char cc = ((CharAtom) this).getC();
 			c = String.valueOf(cc);
-		} else if (a instanceof SymbolAtom) {
-			SymbolAtom s = (SymbolAtom) a;
+		} else if (this instanceof SymbolAtom) {
+			SymbolAtom s = (SymbolAtom) this;
 			c = "Symbol: " + s.getName() + ", " + s.getUnicode();
-		} else if (a instanceof TextStyleAtom) {
-			TextStyleAtom s = (TextStyleAtom) a;
-			c = "TextStyle: " + getBoxContentDisplay(s.getAtom());
-		} else if (a instanceof ScriptsAtom) {
-			ScriptsAtom s = (ScriptsAtom) a;
+		} else if (this instanceof TextStyleAtom) {
+			TextStyleAtom s = (TextStyleAtom) this;
+			c = "TextStyle: " + s.getAtom().getBoxContentDisplay();
+		} else if (this instanceof ScriptsAtom) {
+			ScriptsAtom s = (ScriptsAtom) this;
 			Atom base = s.getBase();
 			Atom subScript = s.getSubscript();
 			Atom superScript = s.getSuperscript();
-			c = "Script: " + getBoxContentDisplay(base) + getBoxContentDisplay(subScript)
-					+ getBoxContentDisplay(superScript);
+			c = "Script: " + base.getBoxContentDisplay() + subScript.getBoxContentDisplay()
+					+ superScript.getBoxContentDisplay();
 		} else {
-			c = "" + a;
+			c = "" + this;
 		}
 		return c;
 	}
@@ -219,15 +212,15 @@ public abstract class Atom implements Cloneable {
 
 	@Override
 	public String toString() {
-		return parsString;
+		return parseString;
 	}
 
 	public Box getBox() {
 		return box;
 	}
 
-	public String getParsString() {
-		return maxString(parsString, 10);
+	public String getParseString() {
+		return maxString(parseString, 100);
 	}
 
 	public static String maxString(String s, int max) {

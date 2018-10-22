@@ -8,6 +8,10 @@ import javax.swing.JLabel;
 
 import org.scilab.forge.jlatexmath.model.Atom;
 import org.scilab.forge.jlatexmath.ui.Box;
+import org.scilab.forge.jlatexmath.ui.CharBox;
+import org.scilab.forge.jlatexmath.ui.NewLineBox;
+
+import javafx.geometry.Rectangle2D;
 
 /**
  * @author Ramin
@@ -139,4 +143,32 @@ public class LatexPane {
 		return parserStack;
 	}
 
+	public String getMacroExpandedString() {
+		return formula.getParser().getParseString().toString();
+	}
+
+	public Box findCaretBox(double x, double y) {
+		List<Box> hitBoxes = new ArrayList<Box>();
+		for (Box b : getBoxes()) {
+			if (b instanceof CharBox || b instanceof NewLineBox) {
+				if (b.getScreenBox() != null) {
+					if (b.getAtom() != null && b.getScreenBox().contains(x, y)) {
+						String c = b.getAtom().getBoxContentDisplay();
+						hitBoxes.add(b);
+						Rectangle2D r = b.getScreenBox();
+						System.out.println("Hit: " + b.getClass().getSimpleName() + " (" + c + ")  at:  "
+								+ ((int) r.getMinX()) + "," + ((int) r.getMinY()) + "," + ((int) r.getWidth()) + ","
+								+ ((int) r.getHeight()) + "    caret: " + b.getCaretPosition() + "  parse: "
+								+ b.getAtom().getParseString());
+					}
+				}
+			}
+		}
+
+		if (!hitBoxes.isEmpty()) {
+			return hitBoxes.get(hitBoxes.size() - 1);
+		}
+
+		return null;
+	}
 }

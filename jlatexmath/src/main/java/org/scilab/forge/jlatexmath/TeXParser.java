@@ -201,9 +201,9 @@ public class TeXParser {
 		this.isFirstPass = firstpass;
 		this.latexPane.addParser(this);
 
-//		System.out.println("*** Textparser: " + parseString);
+		System.out.println("*** Textparser: " + parseString);
 //		System.out.println();
-//		System.out.println("                 isPartial: " + isPartial + "   isFirst: " + isFirstPass);
+		System.out.println("                 isPartial: " + isPartial + "   isFirst: " + isFirstPass);
 //		System.out.println("                 formula: " + formula);
 		if (parseString != null)
 
@@ -755,7 +755,7 @@ public class TeXParser {
 		int l2 = macro.length();
 		int diff = l2 - l1;
 
-		System.out.println("***** diff = " + diff);
+//		System.out.println("***** diff = " + diff);
 
 		if (diff != 0) {
 
@@ -764,7 +764,6 @@ public class TeXParser {
 			for (int i = start; i < 1000000; i++) {
 				latexPane.caretTranslation[i] = diff + lastDiff;
 			}
-			System.out.println();
 		}
 	}
 
@@ -952,12 +951,8 @@ public class TeXParser {
 		if (at != null) {
 			at.setCaretPosition(caretPos);
 			at.setLength(pos - spos);
-			try {
-				int end = Math.min(parseString.length(), startPos + 100);
-				at.parsString = parseString.substring(startPos, end);
-			} catch (Exception ex) {
-				System.out.println();
-			}
+			int end = Math.min(parseString.length(), startPos + 100);
+			at.parseString = parseString.substring(startPos, end);
 		}
 	}
 
@@ -1440,14 +1435,14 @@ public class TeXParser {
 		spos = pos;
 		Atom at;
 
-		System.out.println("firstpass = " + isFirstPass + "  spos = " + spos + "  startPos = " + startPos);
+//		System.out.println("firstpass = " + isFirstPass + "  spos = " + spos + "  startPos = " + startPos);
 
 		String command = getCommand();
 
-		if ("in".equals(command)) {
-			System.out.println();
-		}
-
+//		if ("in".equals(command)) {
+//			System.out.println();
+//		}
+//
 		if (command.length() == 0) {
 			return new EmptyAtom();
 		}
@@ -1762,6 +1757,10 @@ public class TeXParser {
 
 	public boolean isFirstPass() {
 		return isFirstPass;
+	}
+
+	public StringBuffer getParseString() {
+		return parseString;
 	}
 
 }

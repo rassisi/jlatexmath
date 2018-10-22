@@ -1104,4 +1104,8 @@ public class TeXFormula {
 		return root;
 	}
 
+	public TeXParser getParser() {
+		return parser;
+	}
+
 }
