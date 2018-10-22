@@ -56,6 +56,7 @@ import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXEnvironment;
 import org.scilab.forge.jlatexmath.ui.Box;
 import org.scilab.forge.jlatexmath.ui.CharBox;
+import org.scilab.forge.jlatexmath.ui.NewLineBox;
 
 import javafx.geometry.Rectangle2D;
 
@@ -96,6 +97,8 @@ public abstract class Atom implements Cloneable {
 
 	private LatexPane latexPane;
 
+	private int length;
+
 	public Atom() {
 		latexPane = LatexPane.INSTANCE;
 	}
@@ -116,9 +119,9 @@ public abstract class Atom implements Cloneable {
 	public static Box findCaretBox(LatexPane latexPane, double x, double y) {
 		List<Box> hitBoxes = new ArrayList<Box>();
 		for (Box b : latexPane.getBoxes()) {
-			if (b instanceof CharBox) {
+			if (b instanceof CharBox || b instanceof NewLineBox) {
 				if (b.getScreenBox() != null) {
-					if (b.getScreenBox().contains(x, y)) {
+					if (b.getAtom() != null && b.getScreenBox().contains(x, y)) {
 						String c = getBoxContentDisplay(b.getAtom());
 						hitBoxes.add(b);
 						Rectangle2D r = b.getScreenBox();
@@ -209,7 +212,9 @@ public abstract class Atom implements Cloneable {
 	}
 
 	public void setCaretPosition(int caretPosition) {
-		this.caretPosition = latexPane.getCaretPosition();
+		if (this.caretPosition == -1) {
+			this.caretPosition = latexPane.getCaretPosition();
+		}
 	}
 
 	@Override
@@ -231,4 +236,13 @@ public abstract class Atom implements Cloneable {
 		}
 		return s.substring(0, Math.min(s.length(), max));
 	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
 }

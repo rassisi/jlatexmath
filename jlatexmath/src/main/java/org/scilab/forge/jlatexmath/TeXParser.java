@@ -69,7 +69,6 @@ import org.scilab.forge.jlatexmath.model.ScriptsAtom;
 import org.scilab.forge.jlatexmath.model.SpaceAtom;
 import org.scilab.forge.jlatexmath.model.SymbolAtom;
 import org.scilab.forge.jlatexmath.model.UnderscoreAtom;
-import org.scilab.forge.jlatexmath.ui.NewLineBox;
 
 /**
  * This class implements a parser for LaTeX' formulas.
@@ -524,14 +523,26 @@ public class TeXParser {
 						} else {
 							try {
 								String[] optarg = getOptsArgs(mac.nbArgs - 1, 0);
+
 								String grp = getGroup("\\begin{" + args[1] + "}", "\\end{" + args[1] + "}");
+
+								int index = parseString.indexOf(grp, spos);
+
+								int diff = 0;
+								if (index > 0) {
+
+									String s = parseString.substring(spos, index);
+									String s2 = s.trim();
+									diff = s.length() - s2.length();
+
+								}
+
 								String expr = "{\\makeatletter \\" + args[1] + "@env";
 								for (int i = 1; i <= mac.nbArgs - 1; i++)
 									expr += "{" + optarg[i] + "}";
 								expr += "{" + grp + "}\\makeatother}";
-								updatecaretTranslation(spos, pos, expr);
+								updatecaretTranslation(spos, pos - diff, expr);
 								parseString.replace(spos, pos, expr);
-								// 29
 								len = parseString.length();
 								pos = spos;
 							} catch (ParseException e) {
@@ -743,11 +754,17 @@ public class TeXParser {
 		int l1 = end - start;
 		int l2 = macro.length();
 		int diff = l2 - l1;
-		int[] temp = new int[1000000];
-		System.arraycopy(latexPane.caretTranslation, 0, temp, 0, 1000000);
 
-		for (int i = end; i < 1000000; i++) {
-			latexPane.caretTranslation[i] += diff;
+		System.out.println("***** diff = " + diff);
+
+		if (diff != 0) {
+
+			int lastDiff = latexPane.caretTranslation[latexPane.caretTranslation.length - 1];
+
+			for (int i = start; i < 1000000; i++) {
+				latexPane.caretTranslation[i] = diff + lastDiff;
+			}
+			System.out.println();
 		}
 	}
 
@@ -931,12 +948,13 @@ public class TeXParser {
 		updateAtom(at, latexPane.getCaretPosition());
 	}
 
-	public void updateAtom(Atom at, int pos) {
+	public void updateAtom(Atom at, int caretPos) {
 		if (at != null) {
-			at.setCaretPosition(pos);
+			at.setCaretPosition(caretPos);
+			at.setLength(pos - spos);
 			try {
-				int end = Math.min(parseString.length(), pos + 100);
-				at.parsString = parseString.substring(pos, end);
+				int end = Math.min(parseString.length(), startPos + 100);
+				at.parsString = parseString.substring(startPos, end);
 			} catch (Exception ex) {
 				System.out.println();
 			}
@@ -1426,22 +1444,24 @@ public class TeXParser {
 
 		String command = getCommand();
 
+		if ("in".equals(command)) {
+			System.out.println();
+		}
+
 		if (command.length() == 0) {
 			return new EmptyAtom();
 		}
 
-		if ("Longrightarrow".contentEquals(command)) {
-			System.out.println();
+		// ---------- a newline detected
+
+		if ("\\".equals(command)) {
+			at = new NewLineAtom();
+			updateAtom(at);
+			formula.add(at);
 		}
+
 		if (MacroInfo.Commands.get(command) != null) {
 			at = processCommands(command);
-
-			if (at == null && "\\".equals(command)) {
-				Atom atom = new NewLineAtom();
-				new NewLineBox(atom);
-				updateAtom(atom);
-			}
-
 			return at;
 		}
 
@@ -1738,6 +1758,10 @@ public class TeXParser {
 
 	public int getStartPos() {
 		return startPos;
+	}
+
+	public boolean isFirstPass() {
+		return isFirstPass;
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JLabel;
 
+import org.scilab.forge.jlatexmath.model.Atom;
 import org.scilab.forge.jlatexmath.ui.Box;
 
 /**
@@ -31,6 +32,8 @@ public class LatexPane {
 
 	private final List<Box> boxes;;
 
+	private final List<Atom> atoms;
+
 	private final String originalParseString;
 
 	private final double width;
@@ -55,6 +58,7 @@ public class LatexPane {
 		this.fgColor = fgColor;
 		this.size = size;
 		this.boxes = new ArrayList<Box>();
+		this.atoms = new ArrayList<Atom>();
 	}
 
 	public void build() {
@@ -85,8 +89,11 @@ public class LatexPane {
 	public int getCaretPosition() {
 		int caret = 0;
 		for (TeXParser parser : parserStack) {
-			caret = caretTranslation[parser.getStartPos()]; // Spos()];
+			caret += parser.getStartPos();
 		}
+
+//		caret += caretTranslation[caret];
+
 		return caret;
 	}
 
@@ -111,7 +118,11 @@ public class LatexPane {
 	}
 
 	public void addParser(TeXParser parser) {
-		parserStack.add(parser);
+		if (!parser.isFirstPass()) {
+			if (!parserStack.contains(parser)) {
+				parserStack.add(parser);
+			}
+		}
 	}
 
 	public void removeParser() {
@@ -119,4 +130,13 @@ public class LatexPane {
 			parserStack.remove(parserStack.size() - 1);
 		}
 	}
+
+	public List<Atom> getAtoms() {
+		return atoms;
+	}
+
+	public List<TeXParser> getParserStack() {
+		return parserStack;
+	}
+
 }
