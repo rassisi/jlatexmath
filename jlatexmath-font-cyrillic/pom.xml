@@ -28,7 +28,7 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>${build.helper.plugin.version}</version>
                 <executions>
-                    <execution>
+<!--                     <execution>
                         <id>add-resource</id>
                         <phase>generate-resources</phase>
                         <goals>
@@ -47,7 +47,7 @@
                             </resources>
                         </configuration>
                     </execution>
-                </executions>
+ -->                </executions>
             </plugin>
         </plugins>
     </build>
